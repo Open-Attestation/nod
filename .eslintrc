@@ -11,6 +11,12 @@
       }
     }
   },
+  "globals": {
+    "artifacts": "readonly",
+    "contract": "readonly",
+    "assert": "readonly",
+    "web3": "writable"
+  },
   "overrides": [
     {
       "files": ["**/*.ts", "**/*.tsx"],
