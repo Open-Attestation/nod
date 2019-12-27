@@ -1,3 +1,6 @@
+import { get } from "lodash";
+import { Document, getData } from "@govtechsg/open-attestation";
+
 import { Issuer, TransferOwnership } from "../types";
 import { tokenRegistryContract } from "../common/smartContract/tokenRegistryContract";
 
@@ -21,3 +24,14 @@ export const transferTokenOwnership = async (
   const tx = await tokenRegistryContractInstancesWithSigner.transferFrom(from, to, tokenId);
   return { txHash: tx.hash, token: tokenId, owner: to };
 };
+
+export const getBatchMerkleRoot = (document: Document) => {
+  return `0x${get(document, "signature.merkleRoot")}`;
+};
+
+export const getIssuer = (document: Document): Issuer => {
+  const data = getData(document);
+  if (!(data.issuers.length === 1)) throw new Error("Token must have exactly one token registry contract");
+  if (!data.issuers[0].tokenRegistry) throw new Error("Token must have token registry in it");
+  return data.issuers[0];
+}
