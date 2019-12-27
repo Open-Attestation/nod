@@ -1,13 +1,13 @@
 import { Issuer, TransferOwnership } from "../types";
-import { contractInstance } from "../common/smartContract/contractInstance";
+import { tokenRegistryContract } from "../common/smartContract/tokenRegistryContract";
 
-const getContractInstance = (issuer: Issuer, signer?: string) => {
-  return contractInstance({ contractAddress: issuer.tokenRegistry, signer });
+const getTokenRegistryContractInstance = (issuer: Issuer, signer?: string) => {
+  return tokenRegistryContract({ contractAddress: issuer.tokenRegistry, signer });
 };
 
 export const getOwnerOf = async (tokenId: string, issuer: Issuer): Promise<string> => {
-  const contractInstances = getContractInstance(issuer);
-  return contractInstances.ownerOf(tokenId);
+  const tokenRegistryContractInstance = getTokenRegistryContractInstance(issuer);
+  return tokenRegistryContractInstance.ownerOf(tokenId);
 };
 
 export const transferTokenOwnership = async (
@@ -17,7 +17,7 @@ export const transferTokenOwnership = async (
   issuer: Issuer,
   signer: string
 ): Promise<TransferOwnership> => {
-  const contractInstancesWithSigner = getContractInstance(issuer, signer);
-  const tx = await contractInstancesWithSigner.transferFrom(from, to, tokenId);
+  const tokenRegistryContractInstancesWithSigner = getTokenRegistryContractInstance(issuer, signer);
+  const tx = await tokenRegistryContractInstancesWithSigner.transferFrom(from, to, tokenId);
   return { txHash: tx.hash, token: tokenId, owner: to };
 };
