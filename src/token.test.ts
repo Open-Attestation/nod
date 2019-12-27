@@ -1,5 +1,5 @@
 import { get } from "lodash";
-import Token from ".";
+import { Token } from "./token";
 import { tokenRopstenValid } from "../fixtures/tokenRopstenValid";
 import { tokenRopstenInvalid } from "../fixtures/tokenRopstenInvalid";
 
