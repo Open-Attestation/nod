@@ -11,7 +11,8 @@
   },
   "files": [
     "dist",
-    "src"
+    "src",
+    "build"
   ],
   "scripts": {
     "type-check": "tsc --noEmit",
