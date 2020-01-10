@@ -52,4 +52,19 @@ interface ITitleEscrow {
   ///@notice TokenRegistry which this TitleEscrow is registered to accept tokens from
   function tokenRegistry() external returns (address);
 }
+
+contract CalculateSelector {
+  function calculateSelector() public pure returns (bytes4) {
+    ITitleEscrow i;
+    return
+      i.onERC721Received.selector ^
+      i.changeHolder.selector ^
+      i.endorseTransfer.selector ^
+      i.transferTo.selector ^
+      i.approvedTransferTarget.selector ^
+      i.beneficiary.selector ^
+      i.holder.selector ^
+      i.status.selector ^
+      i.tokenRegistry.selector;
+  }
 }
