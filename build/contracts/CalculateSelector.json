@@ -1,252 +1,27 @@
 {
-  "contractName": "ITitleEscrow",
+  "contractName": "CalculateSelector",
   "abi": [
     {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "_tokenRegistry",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "_to",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "_id",
-          "type": "uint256"
-        }
-      ],
-      "name": "TitleCeded",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "_tokenRegistry",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "_from",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "_id",
-          "type": "uint256"
-        }
-      ],
-      "name": "TitleReceived",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "_tokenid",
-          "type": "uint256"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "_from",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "_to",
-          "type": "address"
-        }
-      ],
-      "name": "TransferEndorsed",
-      "type": "event"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "operator",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "bytes",
-          "name": "data",
-          "type": "bytes"
-        }
-      ],
-      "name": "onERC721Received",
-      "outputs": [
-        {
-          "internalType": "bytes4",
-          "name": "",
-          "type": "bytes4"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "newHolder",
-          "type": "address"
-        }
-      ],
-      "name": "changeHolder",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "newBeneficiary",
-          "type": "address"
-        }
-      ],
-      "name": "endorseTransfer",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "newBeneficiary",
-          "type": "address"
-        }
-      ],
-      "name": "transferTo",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [],
-      "name": "approvedTransferTarget",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [],
-      "name": "beneficiary",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [],
-      "name": "holder",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [],
-      "name": "status",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
       "constant": true,
-      "inputs": [
+      "inputs": [],
+      "name": "calculateSelector",
+      "outputs": [
         {
           "internalType": "bytes4",
           "name": "",
           "type": "bytes4"
         }
       ],
-      "name": "supportsInterface",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
       "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [],
-      "name": "tokenRegistry",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
+      "stateMutability": "pure",
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.5.12+commit.7709ece9\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_tokenRegistry\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_to\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"_id\",\"type\":\"uint256\"}],\"name\":\"TitleCeded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_tokenRegistry\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"_id\",\"type\":\"uint256\"}],\"name\":\"TitleReceived\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"_tokenid\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_to\",\"type\":\"address\"}],\"name\":\"TransferEndorsed\",\"type\":\"event\"},{\"constant\":false,\"inputs\":[],\"name\":\"approvedTransferTarget\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"beneficiary\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"newHolder\",\"type\":\"address\"}],\"name\":\"changeHolder\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"newBeneficiary\",\"type\":\"address\"}],\"name\":\"endorseTransfer\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"holder\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"onERC721Received\",\"outputs\":[{\"internalType\":\"bytes4\",\"name\":\"\",\"type\":\"bytes4\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"status\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"tokenRegistry\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"newBeneficiary\",\"type\":\"address\"}],\"name\":\"transferTo\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{\"changeHolder(address)\":{\"params\":{\"newHolder\":\"The address of the new holder\"}},\"endorseTransfer(address)\":{\"params\":{\"newBeneficiary\":\"The address of the new holder\"}},\"onERC721Received(address,address,uint256,bytes)\":{\"params\":{\"data\":\"Additional data with no specified format\",\"from\":\"The address which previously owned the token\",\"operator\":\"The address which called `safeTransferFrom` function\",\"tokenId\":\"The NFT identifier which is being transferred\"},\"return\":\"`bytes4(keccak256(\\\"onERC721Received(address,address,uint256,bytes)\\\"))` unless throwing\"},\"transferTo(address)\":{\"params\":{\"newBeneficiary\":\"The address of the new holder\"}}},\"title\":\"Title Escrow for Transferable Records\"},\"userdoc\":{\"methods\":{\"approvedTransferTarget()\":{\"notice\":\"Public getter to access the endorsement if any\"},\"beneficiary()\":{\"notice\":\"Public getter to access the beneficiary of the Title. The beneficiary is the legal owner of the Title.\"},\"changeHolder(address)\":{\"notice\":\"Handle the change of holdership by current holder\"},\"endorseTransfer(address)\":{\"notice\":\"Handle the transfer endorsement by the beneficiary\"},\"holder()\":{\"notice\":\"Public getter to access the holder of the Title, who is equivalent to holdership of a physical Title\"},\"onERC721Received(address,address,uint256,bytes)\":{\"notice\":\"Handle the receipt of an NFT\"},\"status()\":{\"notice\":\"Status of the TitleEscrow contract, which can be {Uninitialised, InUse, Exited}\"},\"supportsInterface(bytes4)\":{\"notice\":\"ERC165 supportsInterface\"},\"tokenRegistry()\":{\"notice\":\"TokenRegistry which this TitleEscrow is registered to accept tokens from\"},\"transferTo(address)\":{\"notice\":\"Handle the token transfer by the holder after beneficiary's endorsement\"}}}},\"settings\":{\"compilationTarget\":{\"/Users/rjc/Projects/govtechsg/ace/DLT/internal/open-attestation/oa-token/contracts/ITitleEscrow.sol\":\"ITitleEscrow\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/rjc/Projects/govtechsg/ace/DLT/internal/open-attestation/oa-token/contracts/ITitleEscrow.sol\":{\"keccak256\":\"0xe6a36098d4ca98b6d937888c0e36433e130a22f7fc534625a2b1d464bd02f899\",\"urls\":[\"bzz-raw://dbfd2892f556c8d4f733c34ebe7d1df9fb21542f5bebbc281cf96c7328a32ee4\",\"dweb:/ipfs/QmeeuPUZ4YYwxbvLvjbV3JHohfLYMqWAjkJ5NsXHuCVnyJ\"]}},\"version\":1}",
-  "bytecode": "0x",
-  "deployedBytecode": "0x",
-  "sourceMap": "",
-  "deployedSourceMap": "",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.12+commit.7709ece9\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[],\"name\":\"calculateSelector\",\"outputs\":[{\"internalType\":\"bytes4\",\"name\":\"\",\"type\":\"bytes4\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/rjc/Projects/govtechsg/ace/DLT/internal/open-attestation/oa-token/contracts/ITitleEscrow.sol\":\"CalculateSelector\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/rjc/Projects/govtechsg/ace/DLT/internal/open-attestation/oa-token/contracts/ITitleEscrow.sol\":{\"keccak256\":\"0xe6a36098d4ca98b6d937888c0e36433e130a22f7fc534625a2b1d464bd02f899\",\"urls\":[\"bzz-raw://dbfd2892f556c8d4f733c34ebe7d1df9fb21542f5bebbc281cf96c7328a32ee4\",\"dweb:/ipfs/QmeeuPUZ4YYwxbvLvjbV3JHohfLYMqWAjkJ5NsXHuCVnyJ\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b506101fb806100206000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c8063bb71eb3b14610030575b600080fd5b61003861008c565b60405180827bffffffffffffffffffffffffffffffffffffffffffffffffffffffff19167bffffffffffffffffffffffffffffffffffffffffffffffffffffffff1916815260200191505060405180910390f35b6000808073ffffffffffffffffffffffffffffffffffffffff16639d23c4c7905060e01b8173ffffffffffffffffffffffffffffffffffffffff1663200d2ed2905060e01b8273ffffffffffffffffffffffffffffffffffffffff1663e534155d905060e01b8373ffffffffffffffffffffffffffffffffffffffff166338af3eed905060e01b8473ffffffffffffffffffffffffffffffffffffffff16638b347f79905060e01b8573ffffffffffffffffffffffffffffffffffffffff1663a03fa7e3905060e01b8673ffffffffffffffffffffffffffffffffffffffff1663a90d16dc905060e01b8773ffffffffffffffffffffffffffffffffffffffff16635a87db75905060e01b8873ffffffffffffffffffffffffffffffffffffffff1663150b7a02905060e01b18181818181818189150509056fea265627a7a72315820a18326bd521a3353a82d108fe12f1467d4b53675b4faaf124da5c5080ffd420364736f6c634300050c0032",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061002b5760003560e01c8063bb71eb3b14610030575b600080fd5b61003861008c565b60405180827bffffffffffffffffffffffffffffffffffffffffffffffffffffffff19167bffffffffffffffffffffffffffffffffffffffffffffffffffffffff1916815260200191505060405180910390f35b6000808073ffffffffffffffffffffffffffffffffffffffff16639d23c4c7905060e01b8173ffffffffffffffffffffffffffffffffffffffff1663200d2ed2905060e01b8273ffffffffffffffffffffffffffffffffffffffff1663e534155d905060e01b8373ffffffffffffffffffffffffffffffffffffffff166338af3eed905060e01b8473ffffffffffffffffffffffffffffffffffffffff16638b347f79905060e01b8573ffffffffffffffffffffffffffffffffffffffff1663a03fa7e3905060e01b8673ffffffffffffffffffffffffffffffffffffffff1663a90d16dc905060e01b8773ffffffffffffffffffffffffffffffffffffffff16635a87db75905060e01b8873ffffffffffffffffffffffffffffffffffffffff1663150b7a02905060e01b18181818181818189150509056fea265627a7a72315820a18326bd521a3353a82d108fe12f1467d4b53675b4faaf124da5c5080ffd420364736f6c634300050c0032",
+  "sourceMap": "2552:417:1:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;2552:417:1;;;;;;;",
+  "deployedSourceMap": "2552:417:1:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;2552:417:1;;;;;;;;;;;;;;;;;;;2583:384;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;2633:6;2647:14;2938:1;:15;;;:24;;;;2912:1;:8;;;:17;;;;2886:1;:8;;;:17;;;;2855:1;:13;;;:22;;;;2813:1;:24;;;:33;;;;2783:1;:12;;;:21;;;;2748:1;:17;;;:26;;;;2716:1;:14;;;:23;;;;2680:1;:18;;;:27;;;;:59;:94;:124;:166;:197;:223;:249;:282;2667:295;;;2583:384;:::o",
   "source": "pragma solidity ^0.5.11;\n\n/// @title Title Escrow for Transferable Records\ninterface ITitleEscrow {\n  /// @dev This emits when the escrow contract receives an ERC721 token.\n  event TitleReceived(address indexed _tokenRegistry, address indexed _from, uint256 indexed _id);\n\n  /// @dev This emits when the ownership is transferred out of the escrow contract.\n  event TitleCeded(address indexed _tokenRegistry, address indexed _to, uint256 indexed _id);\n\n  /// @dev This emits when the beneficiary endorsed the the holder's transfer.\n  event TransferEndorsed(uint256 indexed _tokenid, address indexed _from, address indexed _to);\n\n  /// @notice Handle the receipt of an NFT\n  /// @param operator The address which called `safeTransferFrom` function\n  /// @param from The address which previously owned the token\n  /// @param tokenId The NFT identifier which is being transferred\n  /// @param data Additional data with no specified format\n  /// @return `bytes4(keccak256(\"onERC721Received(address,address,uint256,bytes)\"))`\n  /// unless throwing\n  function onERC721Received(address operator, address from, uint256 tokenId, bytes calldata data)\n    external\n    returns (bytes4);\n\n  /// @notice Handle the change of holdership by current holder\n  /// @param newHolder The address of the new holder\n  function changeHolder(address newHolder) external;\n\n  /// @notice Handle the transfer endorsement by the beneficiary\n  /// @param newBeneficiary The address of the new holder\n  function endorseTransfer(address newBeneficiary) external;\n\n  /// @notice Handle the token transfer by the holder after beneficiary's endorsement\n  /// @param newBeneficiary The address of the new holder\n  function transferTo(address newBeneficiary) external;\n\n  /// @notice Public getter to access the endorsement if any\n  function approvedTransferTarget() external;\n\n  /// @notice Public getter to access the beneficiary of the Title. The beneficiary is the legal owner of the Title.\n  function beneficiary() external returns (address);\n\n  /// @notice Public getter to access the holder of the Title, who is equivalent to holdership of a physical Title\n  function holder() external returns (address);\n\n  /// @notice Status of the TitleEscrow contract, which can be {Uninitialised, InUse, Exited}\n  function status() external;\n\n  /// @notice ERC165 supportsInterface\n  function supportsInterface(bytes4) external view returns (bool);\n\n  ///@notice TokenRegistry which this TitleEscrow is registered to accept tokens from\n  function tokenRegistry() external returns (address);\n}\n\ncontract CalculateSelector {\n  function calculateSelector() public pure returns (bytes4) {\n    ITitleEscrow i;\n    return\n      i.onERC721Received.selector ^\n      i.changeHolder.selector ^\n      i.endorseTransfer.selector ^\n      i.transferTo.selector ^\n      i.approvedTransferTarget.selector ^\n      i.beneficiary.selector ^\n      i.holder.selector ^\n      i.status.selector ^\n      i.tokenRegistry.selector;\n  }\n}\n",
   "sourcePath": "/Users/rjc/Projects/govtechsg/ace/DLT/internal/open-attestation/oa-token/contracts/ITitleEscrow.sol",
   "ast": {
@@ -3541,68 +3316,11 @@
   },
   "networks": {},
   "schemaVersion": "3.0.19",
-  "updatedAt": "2020-01-10T12:28:58.862Z",
+  "updatedAt": "2020-01-10T12:28:58.860Z",
   "devdoc": {
-    "methods": {
-      "changeHolder(address)": {
-        "params": {
-          "newHolder": "The address of the new holder"
-        }
-      },
-      "endorseTransfer(address)": {
-        "params": {
-          "newBeneficiary": "The address of the new holder"
-        }
-      },
-      "onERC721Received(address,address,uint256,bytes)": {
-        "params": {
-          "data": "Additional data with no specified format",
-          "from": "The address which previously owned the token",
-          "operator": "The address which called `safeTransferFrom` function",
-          "tokenId": "The NFT identifier which is being transferred"
-        },
-        "return": "`bytes4(keccak256(\"onERC721Received(address,address,uint256,bytes)\"))` unless throwing"
-      },
-      "transferTo(address)": {
-        "params": {
-          "newBeneficiary": "The address of the new holder"
-        }
-      }
-    },
-    "title": "Title Escrow for Transferable Records"
+    "methods": {}
   },
   "userdoc": {
-    "methods": {
-      "approvedTransferTarget()": {
-        "notice": "Public getter to access the endorsement if any"
-      },
-      "beneficiary()": {
-        "notice": "Public getter to access the beneficiary of the Title. The beneficiary is the legal owner of the Title."
-      },
-      "changeHolder(address)": {
-        "notice": "Handle the change of holdership by current holder"
-      },
-      "endorseTransfer(address)": {
-        "notice": "Handle the transfer endorsement by the beneficiary"
-      },
-      "holder()": {
-        "notice": "Public getter to access the holder of the Title, who is equivalent to holdership of a physical Title"
-      },
-      "onERC721Received(address,address,uint256,bytes)": {
-        "notice": "Handle the receipt of an NFT"
-      },
-      "status()": {
-        "notice": "Status of the TitleEscrow contract, which can be {Uninitialised, InUse, Exited}"
-      },
-      "supportsInterface(bytes4)": {
-        "notice": "ERC165 supportsInterface"
-      },
-      "tokenRegistry()": {
-        "notice": "TokenRegistry which this TitleEscrow is registered to accept tokens from"
-      },
-      "transferTo(address)": {
-        "notice": "Handle the token transfer by the holder after beneficiary's endorsement"
-      }
-    }
+    "methods": {}
   }
 }
