@@ -1,6 +1,5 @@
 const TitleEscrow = artifacts.require("TitleEscrow");
 const ERC721 = artifacts.require("ERC721MintableFull");
-const CalculateSelector = artifacts.require("CalculateSelector");
 const {expect} = require("chai").use(require("chai-as-promised"));
 
 const SAMPLE_TOKEN_ID = "0x624d0d7ae6f44d41d368d8280856dbaac6aa29fb3b35f45b80a7c1c90032eeb3";
@@ -57,14 +56,6 @@ contract("TitleEscrow", accounts => {
     expect(escrowBeneficiary).to.be.equal(beneficiary1);
     expect(escrowHolder).to.be.equal(beneficiary1);
     expect(escrowTokenRegistry).to.be.equal(ERC721Address);
-  });
-
-  it("should have the correct ERC165 interface support", async () => {
-    const escrowInstance = await TitleEscrow.new(ERC721Address, beneficiary1, beneficiary1);
-    const calculatorInstance = await CalculateSelector.new();
-    const expectedInterface = await calculatorInstance.calculateSelector();
-    const interfaceSupported = await escrowInstance.supportsInterface(expectedInterface);
-    expect(interfaceSupported).to.be.equal(true);
   });
 
   it("should be instantiated correctly when deployed by 3rd party to be held by beneficiary1", async () => {

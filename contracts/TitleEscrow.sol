@@ -45,7 +45,7 @@ contract HasHolder is Context {
   }
 }
 
-contract TitleEscrow is Context, ITitleEscrow, HasNamedBeneficiary, HasHolder, ERC165 {
+contract TitleEscrow is Context, HasNamedBeneficiary, HasHolder, ITitleEscrow {
   event TitleReceived(address indexed _tokenRegistry, address indexed _from, uint256 indexed _id);
   event TitleCeded(address indexed _tokenRegistry, address indexed _to, uint256 indexed _id);
   event TransferEndorsed(uint256 indexed _tokenid, address indexed _from, address indexed _to);
@@ -55,16 +55,13 @@ contract TitleEscrow is Context, ITitleEscrow, HasNamedBeneficiary, HasHolder, E
   uint256 public _tokenId;
   address public approvedTransferTarget = address(0);
   StatusTypes public status = StatusTypes.Uninitialised;
-  bytes4 private constant _INTERFACE_ID_TITLEESCROW = 0xad3fae94;
 
-  //TODO: change ERC721 to address so that external contracts don't need to import ERC721 to use this
   constructor(ERC721 _tokenRegistry, address _beneficiary, address _holder)
     public
     HasNamedBeneficiary(_beneficiary)
     HasHolder(_holder)
   {
     tokenRegistry = ERC721(_tokenRegistry);
-    _registerInterface(_INTERFACE_ID_TITLEESCROW);
   }
 
   function onERC721Received(address operator, address from, uint256 tokenId, bytes calldata data)

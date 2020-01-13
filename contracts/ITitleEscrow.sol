@@ -33,38 +33,4 @@ interface ITitleEscrow {
   /// @notice Handle the token transfer by the holder after beneficiary's endorsement
   /// @param newBeneficiary The address of the new holder
   function transferTo(address newBeneficiary) external;
-
-  /// @notice Public getter to access the endorsement if any
-  function approvedTransferTarget() external;
-
-  /// @notice Public getter to access the beneficiary of the Title. The beneficiary is the legal owner of the Title.
-  function beneficiary() external returns (address);
-
-  /// @notice Public getter to access the holder of the Title, who is equivalent to holdership of a physical Title
-  function holder() external returns (address);
-
-  /// @notice Status of the TitleEscrow contract, which can be {Uninitialised, InUse, Exited}
-  function status() external;
-
-  /// @notice ERC165 supportsInterface
-  function supportsInterface(bytes4) external view returns (bool);
-
-  ///@notice TokenRegistry which this TitleEscrow is registered to accept tokens from
-  function tokenRegistry() external returns (address);
-}
-
-contract CalculateSelector {
-  function calculateSelector() public pure returns (bytes4) {
-    ITitleEscrow i;
-    return
-      i.onERC721Received.selector ^
-      i.changeHolder.selector ^
-      i.endorseTransfer.selector ^
-      i.transferTo.selector ^
-      i.approvedTransferTarget.selector ^
-      i.beneficiary.selector ^
-      i.holder.selector ^
-      i.status.selector ^
-      i.tokenRegistry.selector;
-  }
 }
