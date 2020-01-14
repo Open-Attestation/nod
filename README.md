@@ -9,8 +9,17 @@ EthersJS is heavily used in this library and unless otherwise stated all Ethereu
 
 ## Initialize
 
-        import { ReadOnlyToken, Writeable } from "@govtechsg/oa-token";
+        import { ReadOnlyToken, WriteableToken } from "@govtechsg/oa-token";
         const tokenInstance = new ReadOnlyToken({document: wrappedDocument});
+
+## Save Web3 Provider or Wallet
+
+        import { WriteableToken, setWeb3Provider, setWallet } from "@govtechsg/oa-token";
+
+        setWeb3Provider(provider)
+        setWallet(wallet)
+
+        const token = new WriteableToken({document}) // Don't need to provider wallet or provider again here
 
 ## Get the owner of the contract
 

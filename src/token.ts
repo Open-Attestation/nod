@@ -3,6 +3,7 @@ import {ethers} from "ethers";
 import {getIssuer} from "./util/token";
 import {TokenRegistry} from "./registry";
 import {EthereumNetwork} from "./types";
+import {getWeb3Provider, getWallet} from "./provider";
 
 /**
  * Class Token to read info from ERC721 contract.
@@ -16,7 +17,7 @@ export class ReadOnlyToken {
 
   constructor({
     document,
-    web3Provider,
+    web3Provider = getWeb3Provider(),
     network = EthereumNetwork.Ropsten // Default to Ropsten since we currently only operate on Ropsten
   }: {
     document: WrappedDocument;
@@ -42,8 +43,8 @@ export class WriteableToken extends ReadOnlyToken {
 
   constructor({
     document,
-    web3Provider,
-    wallet,
+    web3Provider = getWeb3Provider(),
+    wallet = getWallet(),
     network = EthereumNetwork.Ropsten // Default to Ropsten since we currently only operate on Ropsten
   }: {
     document: WrappedDocument;
@@ -53,6 +54,9 @@ export class WriteableToken extends ReadOnlyToken {
   }) {
     super({document, web3Provider, network});
 
+    if (!wallet) {
+      throw new Error("WriteableToken requires a wallet to be supplied at initialisation");
+    }
     this.wallet = wallet;
     this.tokenRegistry = new TokenRegistry({
       contractAddress: getIssuer(this.document).tokenRegistry,
