@@ -1,4 +1,4 @@
-import {ethers} from "ethers";
+import {providers} from "ethers";
 import {TokenRegistry} from "../src/index";
 
 const {expect} = require("chai").use(require("chai-as-promised"));
@@ -20,7 +20,7 @@ describe("TokenRegistry", () => {
   beforeEach("", async () => {
     ERC721Instance = await ERC721.new("foo", "bar");
     ERC721Address = ERC721Instance.address;
-    provider = new ethers.providers.Web3Provider(web3.currentProvider);
+    provider = new providers.Web3Provider(web3.currentProvider);
     shippingLine = provider.getSigner(0);
     owner1 = provider.getSigner(1);
     owner2 = provider.getSigner(2);

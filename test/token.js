@@ -1,4 +1,4 @@
-import {ethers} from "ethers";
+import {providers} from "ethers";
 import {wrapDocument, getData} from "@govtechsg/open-attestation";
 import {WriteableToken, ReadOnlyToken} from "../src/index";
 import {setWallet, setWeb3Provider} from "../src/provider";
@@ -26,7 +26,7 @@ describe("Token", () => {
   beforeEach("", async () => {
     ERC721Instance = await ERC721.new("foo", "bar");
     ERC721Address = ERC721Instance.address;
-    provider = new ethers.providers.Web3Provider(web3.currentProvider);
+    provider = new providers.Web3Provider(web3.currentProvider);
     owner1 = provider.getSigner(1);
     owner2 = provider.getSigner(2);
     sampleDocument = replaceTokenRegistry(ropstenTokenDocument, ERC721Address);

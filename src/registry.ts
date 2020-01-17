@@ -1,14 +1,15 @@
 import {WrappedDocument} from "@govtechsg/open-attestation";
-import {ethers} from "ethers";
+import {providers, Wallet, Contract} from "ethers";
 import {getBatchMerkleRoot} from "./util/token";
 import {abi as TokenRegistryABI} from "../build/contracts/ERC721MintableFull.json";
+import {EthereumAddress} from "./types";
 
 export class TokenRegistry {
-  web3Provider: ethers.providers.BaseProvider;
+  web3Provider: providers.BaseProvider;
 
   address: string;
 
-  contractInstance: ethers.Contract;
+  contractInstance: Contract;
 
   /**
    * Creates a TokenRegistry instance with the specified address and ethersjs signer
@@ -21,22 +22,22 @@ export class TokenRegistry {
     web3Provider,
     wallet
   }: {
-    contractAddress: string;
-    web3Provider: ethers.providers.BaseProvider;
-    wallet?: ethers.Wallet;
+    contractAddress: EthereumAddress;
+    web3Provider: providers.BaseProvider;
+    wallet?: Wallet;
   }) {
     this.web3Provider = web3Provider;
     this.address = contractAddress;
     // doing JSON.stringify below because of ethers.js type issue: https://github.com/ethers-io/ethers.js/issues/602
-    this.contractInstance = new ethers.Contract(contractAddress, JSON.stringify(TokenRegistryABI), web3Provider);
+    this.contractInstance = new Contract(contractAddress, JSON.stringify(TokenRegistryABI), web3Provider);
     if (wallet) {
       this.contractInstance = this.contractInstance.connect(wallet);
     }
   }
 
-  async mint(document: WrappedDocument, owner: string) {
+  async mint(document: WrappedDocument, ownerAddress: EthereumAddress) {
     const tokenId = getBatchMerkleRoot(document);
-    return this.contractInstance["safeMint(address,uint256)"](owner, tokenId);
+    return this.contractInstance["safeMint(address,uint256)"](ownerAddress, tokenId);
   }
 
   async ownerOf(document: WrappedDocument) {
@@ -44,9 +45,9 @@ export class TokenRegistry {
     return this.contractInstance.ownerOf(tokenId);
   }
 
-  async transferTo(document: WrappedDocument, newOwner: string) {
+  async transferTo(document: WrappedDocument, newOwnerAddress: EthereumAddress) {
     const tokenId = getBatchMerkleRoot(document);
     const currentOwner = await this.ownerOf(document);
-    return this.contractInstance["safeTransferFrom(address,address,uint256)"](currentOwner, newOwner, tokenId);
+    return this.contractInstance["safeTransferFrom(address,address,uint256)"](currentOwner, newOwnerAddress, tokenId);
   }
 }

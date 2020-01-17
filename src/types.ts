@@ -1,5 +1,5 @@
 export interface Issuer {
-  tokenRegistry: string;
+  tokenRegistry: EthereumAddress;
 }
 
 export enum EthereumNetwork {
@@ -8,3 +8,5 @@ export enum EthereumNetwork {
   Main = "homestead",
   Ropsten = "ropsten"
 }
+
+export type EthereumAddress = string;
