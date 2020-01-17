@@ -25,7 +25,52 @@ EthersJS is heavily used in this library and unless otherwise stated all Ethereu
 
         await tokenInstance.getOwner();
 
-returns a promise for the address of the owner.
+returns a promise for a class instance that allows interaction with the owner of the token.
+
+## Types of Owners
+
+#### EthereumAccountOwner
+
+`EthereumAccountOwner` are simply objects with a `.address` property. This owner class is instantiated when the owner of the Token is simply an externally owned Ethereum Account - i.e, not a smart contract.
+
+#### TitleEscrowOwner
+
+`TitleEscrowOwner` is instantiated when the owner of the Token is a TitleEscrow smart contract, which governs the transfer of ownership according to [UN/MLETR](https://uncitral.un.org/en/texts/ecommerce/modellaw/electronic_transferable_records).
+
+It allows the reading of the properties, `holder` and `beneficiary`.
+
+Usage:
+
+    const tokenInstance = new ReadOnlyToken({document: wrappedDocument});
+    const tokenOwner = tokenInstance.getOwner()
+
+    if (tokenOwner.isTitleEscrow()) {
+       const beneficiary = tokenOwner.beneficiary();
+       const holder = tokenOwner.holder();
+
+       console.log(
+         `Token ID: ${
+           Token.tokenId
+         } is owned by TitleEscrow at ${tokenOwner.address}. Has beneficiary ${beneficiary} and held by ${holder}`
+       );
+     } else {
+       console.log(`Token ID: ${Token.tokenId}, owned by ${tokenOwner.address}`);
+    }
+
+#### WriteableTitleEscrowOwner
+
+`WriteableTitleEscrowOwner` is the writeable extension of `TitleEscrowOwner`, it allows for calling the smart contract functions which change the state of the system, in addition to everything `TitleEscrowOwner` has.
+
+It has the additional methods `changeHolder(newHolder: EthereumAddress)`, `endorseTransfer(newBeneficiary: EthereumAddress)` , `transferTo(newBeneficiary: EthereumAddress)`.
+
+These methods all return a promise that resolves to the transaction hash when the transaction has been confirmed.
+
+Usage:
+
+    const writeableTokenInstance = new WriteableToken({document: wrappedDocument, web3Provider, wallet})
+    const tokenOwner = writeableTokenInstance.getOwner()
+
+    const transactionHash = await tokenOwner.changeHolder(newHolder);
 
 ## Transfer the token ownership
 

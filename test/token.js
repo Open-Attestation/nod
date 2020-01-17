@@ -41,12 +41,14 @@ describe("Token", () => {
   describe("ReadOnlyToken", () => {
     it("should work without a wallet for read operations", async () => {
       const token = new ReadOnlyToken({document: sampleDocument, web3Provider: provider});
-      expect(await token.getOwner()).to.deep.equal(await owner1.getAddress());
+      const tokenOwner = await token.getOwner();
+      expect(tokenOwner.address).to.deep.equal(await owner1.getAddress());
     });
     it("should use a saved provider if it exists", async () => {
       setWeb3Provider(provider);
       const token = new ReadOnlyToken({document: sampleDocument});
-      expect(await token.getOwner()).to.deep.equal(await owner1.getAddress());
+      const tokenOwner = await token.getOwner();
+      expect(tokenOwner.address).to.deep.equal(await owner1.getAddress());
     });
   });
 
@@ -54,10 +56,12 @@ describe("Token", () => {
     it("should be able to transfer ownership with a wallet", async () => {
       const token = new WriteableToken({document: sampleDocument, web3Provider: provider, wallet: owner1});
 
-      expect(await token.getOwner()).to.deep.equal(await owner1.getAddress());
+      let tokenOwner = await token.getOwner();
+      expect(tokenOwner.address).to.deep.equal(await owner1.getAddress());
       await token.transferOwnership(await owner2.getAddress());
 
-      expect(await token.getOwner()).to.deep.equal(await owner2.getAddress());
+      tokenOwner = await token.getOwner();
+      expect(tokenOwner.address).to.deep.equal(await owner2.getAddress());
     });
 
     it("should use a pre-supplied wallet if there is one", async () => {
@@ -65,13 +69,17 @@ describe("Token", () => {
       setWallet(owner1);
       const token = new WriteableToken({document: sampleDocument});
 
-      expect(await token.getOwner()).to.deep.equal(await owner1.getAddress());
+      let tokenOwner = await token.getOwner();
+      expect(tokenOwner.address).to.deep.equal(await owner1.getAddress());
       await token.transferOwnership(await owner2.getAddress());
 
-      expect(await token.getOwner()).to.deep.equal(await owner2.getAddress());
+      tokenOwner = await token.getOwner();
+      expect(tokenOwner.address).to.deep.equal(await owner2.getAddress());
     });
     it("should throw an error if there is no saved wallet and no wallet was provided in constructor", async () => {
-      await expect(() => new WriteableToken({document: sampleDocument})).to.throw(/Wallet has not been set/);
+      await expect(() => new WriteableToken({document: sampleDocument})).to.throw(
+        /WriteableToken requires a wallet to be supplied at initialisation/
+      );
     });
   });
 });

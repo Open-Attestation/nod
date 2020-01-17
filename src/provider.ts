@@ -14,9 +14,4 @@ export const setWallet = (wallet: Wallet) => {
   savedWallet = wallet;
 };
 
-export const getWallet = (): Wallet => {
-  if (savedWallet) {
-    return savedWallet;
-  }
-  throw new Error("Wallet has not been set");
-};
+export const getWallet = (): Wallet | undefined => savedWallet;

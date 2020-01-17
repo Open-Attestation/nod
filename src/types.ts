@@ -10,3 +10,4 @@ export enum EthereumNetwork {
 }
 
 export type EthereumAddress = string;
+export type EthereumTransactionHash = string;

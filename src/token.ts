@@ -4,6 +4,7 @@ import {getIssuer} from "./util/token";
 import {TokenRegistry} from "./registry";
 import {EthereumAddress, EthereumNetwork} from "./types";
 import {getWeb3Provider, getWallet} from "./provider";
+import {createOwner, Owner, TitleEscrowOwner, WriteableTitleEscrowOwner} from "./owner";
 
 /**
  * Class Token to read info from ERC721 contract.
@@ -32,9 +33,9 @@ export class ReadOnlyToken {
     });
   }
 
-  // isIssued?
-  public async getOwner(): Promise<string> {
-    return this.tokenRegistry.ownerOf(this.document);
+  public async getOwner(): Promise<Owner | TitleEscrowOwner> {
+    const ownerAddress = await this.tokenRegistry.ownerOf(this.document);
+    return createOwner({address: ownerAddress, web3Provider: this.web3Provider});
   }
 }
 
@@ -49,7 +50,7 @@ export class WriteableToken extends ReadOnlyToken {
   }: {
     document: WrappedDocument;
     web3Provider?: providers.BaseProvider;
-    wallet: Wallet;
+    wallet: Wallet | undefined;
     network?: EthereumNetwork;
   }) {
     super({document, web3Provider, network});
@@ -63,6 +64,11 @@ export class WriteableToken extends ReadOnlyToken {
       web3Provider: this.web3Provider,
       wallet
     });
+  }
+
+  public async getOwner(): Promise<Owner | WriteableTitleEscrowOwner> {
+    const ownerAddress = await this.tokenRegistry.ownerOf(this.document);
+    return createOwner({address: ownerAddress, web3Provider: this.web3Provider, wallet: this.wallet});
   }
 
   async transferOwnership(to: EthereumAddress) {
