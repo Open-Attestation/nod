@@ -1,8 +1,9 @@
 import {WrappedDocument} from "@govtechsg/open-attestation";
-import {ethers} from "ethers";
+import {getDefaultProvider, providers, Wallet} from "ethers";
 import {getIssuer} from "./util/token";
 import {TokenRegistry} from "./registry";
-import {EthereumNetwork} from "./types";
+import {EthereumAddress, EthereumNetwork} from "./types";
+import {getWeb3Provider, getWallet} from "./provider";
 
 /**
  * Class Token to read info from ERC721 contract.
@@ -10,21 +11,21 @@ import {EthereumNetwork} from "./types";
 export class ReadOnlyToken {
   document: WrappedDocument;
 
-  web3Provider: ethers.providers.BaseProvider;
+  web3Provider: providers.BaseProvider;
 
   tokenRegistry: TokenRegistry;
 
   constructor({
     document,
-    web3Provider,
+    web3Provider = getWeb3Provider(),
     network = EthereumNetwork.Ropsten // Default to Ropsten since we currently only operate on Ropsten
   }: {
     document: WrappedDocument;
-    web3Provider?: ethers.providers.BaseProvider;
+    web3Provider?: providers.BaseProvider;
     network?: EthereumNetwork;
   }) {
     this.document = document;
-    this.web3Provider = web3Provider || ethers.getDefaultProvider(network);
+    this.web3Provider = web3Provider || getDefaultProvider(network);
     this.tokenRegistry = new TokenRegistry({
       contractAddress: getIssuer(document).tokenRegistry,
       web3Provider: this.web3Provider
@@ -38,21 +39,24 @@ export class ReadOnlyToken {
 }
 
 export class WriteableToken extends ReadOnlyToken {
-  wallet: ethers.Wallet;
+  wallet: Wallet;
 
   constructor({
     document,
-    web3Provider,
-    wallet,
+    web3Provider = getWeb3Provider(),
+    wallet = getWallet(),
     network = EthereumNetwork.Ropsten // Default to Ropsten since we currently only operate on Ropsten
   }: {
     document: WrappedDocument;
-    web3Provider?: ethers.providers.BaseProvider;
-    wallet: ethers.Wallet;
+    web3Provider?: providers.BaseProvider;
+    wallet: Wallet;
     network?: EthereumNetwork;
   }) {
     super({document, web3Provider, network});
 
+    if (!wallet) {
+      throw new Error("WriteableToken requires a wallet to be supplied at initialisation");
+    }
     this.wallet = wallet;
     this.tokenRegistry = new TokenRegistry({
       contractAddress: getIssuer(this.document).tokenRegistry,
@@ -61,7 +65,7 @@ export class WriteableToken extends ReadOnlyToken {
     });
   }
 
-  async transferOwnership(to: string) {
+  async transferOwnership(to: EthereumAddress) {
     return this.tokenRegistry.transferTo(this.document, to);
   }
 }
