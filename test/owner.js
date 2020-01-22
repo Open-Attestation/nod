@@ -13,6 +13,7 @@ const {expect} = require("chai").use(require("chai-as-promised"));
 const TitleEscrow = artifacts.require("TitleEscrow");
 const ERC721 = artifacts.require("ERC721MintableFull");
 const SAMPLE_TOKEN_ID = "0x624d0d7ae6f44d41d368d8280856dbaac6aa29fb3b35f45b80a7c1c90032eeb3";
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 describe("Owner", () => {
   let ERC721Address;
@@ -80,6 +81,23 @@ describe("Owner", () => {
       expect(await titleEscrowInstance.holder()).to.deep.equal(owner1Address);
       await escrowInstance.changeHolder(owner2Address, {from: owner1Address});
       expect(await titleEscrowInstance.holder()).to.deep.equal(owner2Address);
+    });
+    it("should return the approvedTransferTarget if there is one set", async () => {
+      const escrowInstance = await TitleEscrow.new(ERC721Address, owner1Address, owner2Address, {
+        from: owner1Address
+      });
+      await ERC721Instance.safeMint(escrowInstance.address, SAMPLE_TOKEN_ID);
+      await escrowInstance.endorseTransfer(owner2Address, {from: owner1Address});
+      const titleEscrowInstance = new TitleEscrowOwner({address: escrowInstance.address});
+      expect(await titleEscrowInstance.endorsedTransferTarget()).to.deep.equal(owner2Address);
+    });
+    it("should return zero address if there is no endorsed transfer target", async () => {
+      const escrowInstance = await TitleEscrow.new(ERC721Address, owner1Address, owner2Address, {
+        from: owner1Address
+      });
+      await ERC721Instance.safeMint(escrowInstance.address, SAMPLE_TOKEN_ID);
+      const titleEscrowInstance = new TitleEscrowOwner({address: escrowInstance.address});
+      expect(await titleEscrowInstance.endorsedTransferTarget()).to.deep.equal(ZERO_ADDRESS);
     });
   });
 
