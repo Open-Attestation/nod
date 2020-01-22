@@ -6,10 +6,9 @@ import {EthereumAddress, EthereumTransactionHash} from "./types";
 import {getWeb3Provider, getWallet} from "./provider";
 import {getLogger} from "./util/logger";
 import {abi as TitleEscrowABI} from "../build/contracts/TitleEscrow.json";
+import {waitForTransaction} from "./util/transaction";
 
 const {error} = getLogger("owner");
-
-const NUMBER_OF_CONFIRMATIONS = 1; // number of confirmations we should wait before declaring a transaction succeeded
 
 export const isAddressTitleEscrow = async ({
   address,
@@ -99,21 +98,15 @@ export class WriteableTitleEscrowOwner extends TitleEscrowOwner {
   }
 
   async changeHolder(newHolder: EthereumAddress): Promise<EthereumTransactionHash> {
-    const transaction = await this.contractInstance.changeHolder(newHolder);
-    await transaction.wait(NUMBER_OF_CONFIRMATIONS);
-    return transaction.hash;
+    return waitForTransaction(await this.contractInstance.changeHolder(newHolder));
   }
 
   async endorseTransfer(newBeneficiary: EthereumAddress): Promise<EthereumTransactionHash> {
-    const transaction = await this.contractInstance.endorseTransfer(newBeneficiary);
-    await transaction.wait(NUMBER_OF_CONFIRMATIONS);
-    return transaction.hash;
+    return waitForTransaction(this.contractInstance.endorseTransfer(newBeneficiary));
   }
 
   async transferTo(newBeneficiary: EthereumAddress): Promise<EthereumTransactionHash> {
-    const transaction = await this.contractInstance.transferTo(newBeneficiary);
-    await transaction.wait(NUMBER_OF_CONFIRMATIONS);
-    return transaction.hash;
+    return waitForTransaction(this.contractInstance.transferTo(newBeneficiary));
   }
 }
 
