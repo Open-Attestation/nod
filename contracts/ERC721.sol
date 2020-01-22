@@ -1221,3 +1221,17 @@ contract ERC721MintableFull is ERC721Mintable, ERC721Full {
     // solhint-disable-previous-line no-empty-blocks
   }
 }
+
+contract TradeTrustERC721 is ERC721MintableFull, IERC721Receiver {
+  constructor(string memory name, string memory symbol) public ERC721MintableFull(name, symbol) {
+    // solhint-disable-previous-line no-empty-blocks
+  }
+
+  function onERC721Received(address operator, address from, uint256 tokenId, bytes memory data)
+    public
+    returns (bytes4)
+  {
+    _burn(tokenId);
+    return this.onERC721Received.selector;
+  }
+}

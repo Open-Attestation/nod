@@ -3,9 +3,9 @@ import {TokenRegistry} from "../src/index";
 
 const {expect} = require("chai").use(require("chai-as-promised"));
 
-const ERC721 = artifacts.require("ERC721MintableFull");
+const ERC721 = artifacts.require("TradeTrustERC721");
 
-describe("TokenRegistry", () => {
+describe("TokenRegistry Library", () => {
   let ERC721Instance;
   let ERC721Address;
   let provider;
@@ -41,7 +41,28 @@ describe("TokenRegistry", () => {
     const currentOwner = await tokenRegistryWithoutWallet.ownerOf(documentStub);
     expect(currentOwner).to.deep.equal(newOwner);
   });
+  it("should burn tokens that it receives", async () => {
+    const tokenRegistryInstanceWithShippingLineWallet = new TokenRegistry({
+      contractAddress: ERC721Address,
+      web3Provider: provider,
+      wallet: shippingLine
+    });
+    const newOwner = await owner1.getAddress();
+    await tokenRegistryInstanceWithShippingLineWallet.mint(documentStub, newOwner);
+    const currentOwner = await tokenRegistryInstanceWithShippingLineWallet.ownerOf(documentStub);
+    expect(currentOwner).to.deep.equal(newOwner);
 
+    const tokenRegistryInstanceWithOwner1Wallet = new TokenRegistry({
+      contractAddress: ERC721Address,
+      web3Provider: provider,
+      wallet: owner1
+    });
+    await tokenRegistryInstanceWithOwner1Wallet.transferTo(documentStub, ERC721Instance.address);
+    const nextOwnerQuery = tokenRegistryInstanceWithOwner1Wallet.ownerOf(documentStub);
+    await expect(nextOwnerQuery).to.be.rejectedWith(
+      /VM Exception while processing transaction: revert ERC721: owner query for nonexistent token/
+    );
+  });
   it("should be able to mint", async () => {
     const tokenRegistryInstance = new TokenRegistry({
       contractAddress: ERC721Address,
