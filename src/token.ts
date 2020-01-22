@@ -74,4 +74,8 @@ export class WriteableToken extends ReadOnlyToken {
   async transferOwnership(to: EthereumAddress) {
     return this.tokenRegistry.transferTo(this.document, to);
   }
+
+  async surrender() {
+    return this.tokenRegistry.transferTo(this.document, this.tokenRegistry.address);
+  }
 }

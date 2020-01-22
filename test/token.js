@@ -7,7 +7,7 @@ import ropstenTokenDocument from "../fixtures/tokenRopstenValid.json";
 
 const {expect} = require("chai").use(require("chai-as-promised"));
 
-const ERC721 = artifacts.require("ERC721MintableFull");
+const ERC721 = artifacts.require("TradeTrustERC721");
 
 describe("Token", () => {
   let ERC721Instance;
@@ -62,6 +62,14 @@ describe("Token", () => {
 
       tokenOwner = await token.getOwner();
       expect(tokenOwner.address).to.deep.equal(await owner2.getAddress());
+    });
+
+    it("should be able to surrender token", async () => {
+      const token = new WriteableToken({document: sampleDocument, web3Provider: provider, wallet: owner1});
+      await token.surrender();
+      await expect(token.getOwner()).to.be.rejectedWith(
+        /VM Exception while processing transaction: revert ERC721: owner query for nonexistent token/
+      );
     });
 
     it("should use a pre-supplied wallet if there is one", async () => {

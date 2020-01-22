@@ -1,5 +1,5 @@
 const TitleEscrow = artifacts.require("TitleEscrow");
-const ERC721 = artifacts.require("ERC721MintableFull");
+const ERC721 = artifacts.require("TradeTrustERC721");
 const CalculateSelector = artifacts.require("CalculateSelector");
 const {expect} = require("chai").use(require("chai-as-promised"));
 

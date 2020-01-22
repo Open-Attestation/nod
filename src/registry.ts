@@ -1,7 +1,7 @@
 import {WrappedDocument} from "@govtechsg/open-attestation";
 import {providers, Wallet, Contract} from "ethers";
 import {getBatchMerkleRoot} from "./util/token";
-import {abi as TokenRegistryABI} from "../build/contracts/ERC721MintableFull.json";
+import {abi as TokenRegistryABI} from "../build/contracts/TradeTrustERC721.json";
 import {EthereumAddress} from "./types";
 import {waitForTransaction} from "./util/transaction";
 
