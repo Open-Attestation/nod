@@ -3,6 +3,7 @@ import {providers, Wallet, Contract} from "ethers";
 import {getBatchMerkleRoot} from "./util/token";
 import {abi as TokenRegistryABI} from "../build/contracts/ERC721MintableFull.json";
 import {EthereumAddress} from "./types";
+import {waitForTransaction} from "./util/transaction";
 
 export class TokenRegistry {
   web3Provider: providers.BaseProvider;
@@ -37,7 +38,7 @@ export class TokenRegistry {
 
   async mint(document: WrappedDocument, ownerAddress: EthereumAddress) {
     const tokenId = getBatchMerkleRoot(document);
-    return this.contractInstance["safeMint(address,uint256)"](ownerAddress, tokenId);
+    return waitForTransaction(this.contractInstance["safeMint(address,uint256)"](ownerAddress, tokenId));
   }
 
   async ownerOf(document: WrappedDocument) {
@@ -48,6 +49,8 @@ export class TokenRegistry {
   async transferTo(document: WrappedDocument, newOwnerAddress: EthereumAddress) {
     const tokenId = getBatchMerkleRoot(document);
     const currentOwner = await this.ownerOf(document);
-    return this.contractInstance["safeTransferFrom(address,address,uint256)"](currentOwner, newOwnerAddress, tokenId);
+    return waitForTransaction(
+      this.contractInstance["safeTransferFrom(address,address,uint256)"](currentOwner, newOwnerAddress, tokenId)
+    );
   }
 }
