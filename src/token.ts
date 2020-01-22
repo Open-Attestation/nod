@@ -2,7 +2,7 @@ import {WrappedDocument} from "@govtechsg/open-attestation";
 import {getDefaultProvider, providers, Wallet} from "ethers";
 import {getIssuer} from "./util/token";
 import {TokenRegistry} from "./registry";
-import {EthereumAddress, EthereumNetwork} from "./types";
+import {EthereumAddress, EthereumNetwork, EthereumTransactionHash} from "./types";
 import {getWeb3Provider, getWallet} from "./provider";
 import {createOwner, Owner, TitleEscrowOwner, WriteableTitleEscrowOwner} from "./owner";
 
@@ -75,7 +75,11 @@ export class WriteableToken extends ReadOnlyToken {
     return this.tokenRegistry.transferTo(this.document, to);
   }
 
-  async surrender() {
+  async surrender(): Promise<EthereumTransactionHash> {
+    const tokenOwner = await this.getOwner();
+    if (tokenOwner instanceof WriteableTitleEscrowOwner) {
+      return tokenOwner.transferTo(this.tokenRegistry.address);
+    }
     return this.tokenRegistry.transferTo(this.document, this.tokenRegistry.address);
   }
 }
