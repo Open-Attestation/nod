@@ -8,6 +8,7 @@ import ropstenTokenDocument from "../fixtures/tokenRopstenValid.json";
 const {expect} = require("chai").use(require("chai-as-promised"));
 
 const ERC721 = artifacts.require("TradeTrustERC721");
+const TitleEscrow = artifacts.require("TitleEscrow");
 
 describe("Token", () => {
   let ERC721Instance;
@@ -64,14 +65,27 @@ describe("Token", () => {
       expect(tokenOwner.address).to.deep.equal(await owner2.getAddress());
     });
 
-    it("should be able to surrender token", async () => {
+    it("should be able to surrender token if owner is a EOA", async () => {
       const token = new WriteableToken({document: sampleDocument, web3Provider: provider, wallet: owner1});
       await token.surrender();
       await expect(token.getOwner()).to.be.rejectedWith(
         /VM Exception while processing transaction: revert ERC721: owner query for nonexistent token/
       );
     });
+    it("should be able to surrender token if owner is a TitleEscrow contract", async () => {
+      const owner1Address = await owner1.getAddress();
+      const escrowInstance = await TitleEscrow.new(ERC721Address, owner1Address, owner1Address, {
+        from: owner1Address
+      });
 
+      const token = new WriteableToken({document: sampleDocument, web3Provider: provider, wallet: owner1});
+      await token.transferOwnership(escrowInstance.address);
+      expect((await token.getOwner()).address).to.deep.equal(escrowInstance.address);
+      await token.surrender();
+      await expect(token.getOwner()).to.be.rejectedWith(
+        /VM Exception while processing transaction: revert ERC721: owner query for nonexistent token/
+      );
+    });
     it("should use a pre-supplied wallet if there is one", async () => {
       setWeb3Provider(provider);
       setWallet(owner1);

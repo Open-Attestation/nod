@@ -2,7 +2,7 @@ import {WrappedDocument} from "@govtechsg/open-attestation";
 import {providers, Wallet, Contract} from "ethers";
 import {getBatchMerkleRoot} from "./util/token";
 import {abi as TokenRegistryABI} from "../build/contracts/TradeTrustERC721.json";
-import {EthereumAddress} from "./types";
+import {EthereumAddress, EthereumTransactionHash} from "./types";
 import {waitForTransaction} from "./util/transaction";
 
 export class TokenRegistry {
@@ -46,7 +46,7 @@ export class TokenRegistry {
     return this.contractInstance.ownerOf(tokenId);
   }
 
-  async transferTo(document: WrappedDocument, newOwnerAddress: EthereumAddress) {
+  async transferTo(document: WrappedDocument, newOwnerAddress: EthereumAddress): Promise<EthereumTransactionHash> {
     const tokenId = getBatchMerkleRoot(document);
     const currentOwner = await this.ownerOf(document);
     return waitForTransaction(
