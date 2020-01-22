@@ -72,6 +72,10 @@ export class TitleEscrowOwner extends Owner {
   public async holder(): Promise<EthereumAddress> {
     return this.contractInstance.holder();
   }
+
+  public async endorsedTransferTarget(): Promise<EthereumAddress> {
+    return this.contractInstance.approvedTransferTarget();
+  }
 }
 
 export class WriteableTitleEscrowOwner extends TitleEscrowOwner {
