@@ -1,5 +1,5 @@
 import {WrappedDocument} from "@govtechsg/open-attestation";
-import {getIssuer, getBatchMerkleRoot} from "./token";
+import {getIssuerAddress, getBatchMerkleRoot} from "./token";
 import tokenRopstenValid from "../../fixtures/tokenRopstenValid.json";
 import tokenRopstenInvalidWithTwoIssuers from "../../fixtures/tokenRopstenInvalidWithTwoIssuers.json";
 import nonTokenDocument from "../../fixtures/nonTokenDocument.json";
@@ -12,25 +12,22 @@ describe("utils/token", () => {
     });
   });
 
-  describe("getIssuer", () => {
-    it("should get the document issuer", () => {
-      const issuer = getIssuer(<WrappedDocument>tokenRopstenValid);
-      const expectedIssuer = {
-        identityProof: {location: "tradetrust.io", type: "DNS-TXT"},
-        name: "DEMO STORE",
-        tokenRegistry: "0x48399Fb88bcD031C556F53e93F690EEC07963Af3"
-      };
-      expect(issuer).toEqual(expectedIssuer);
+  describe("getIssuerAddress", () => {
+    it("should get the document issuer address", () => {
+      const issuer = getIssuerAddress(<WrappedDocument>tokenRopstenValid);
+      expect(issuer).toEqual("0x48399Fb88bcD031C556F53e93F690EEC07963Af3");
     });
 
     it("should throw an error if there is more than 1 issuer", () => {
-      expect(() => getIssuer(<WrappedDocument>tokenRopstenInvalidWithTwoIssuers)).toThrowError(
+      expect(() => getIssuerAddress(<WrappedDocument>tokenRopstenInvalidWithTwoIssuers)).toThrowError(
         /Token must have exactly one token registry contract/
       );
     });
 
     it("should throw an error if it is not a document with tokenRegistry", () => {
-      expect(() => getIssuer(<WrappedDocument>nonTokenDocument)).toThrowError(/Token must have token registry in it/);
+      expect(() => getIssuerAddress(<WrappedDocument>nonTokenDocument)).toThrowError(
+        /Token must have token registry in it/
+      );
     });
   });
 });
