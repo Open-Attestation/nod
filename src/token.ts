@@ -1,6 +1,6 @@
-import {WrappedDocument} from "@govtechsg/open-attestation";
+import {v2, v3, WrappedDocument} from "@govtechsg/open-attestation";
 import {getDefaultProvider, providers, Wallet} from "ethers";
-import {getIssuer} from "./util/token";
+import {getIssuerAddress} from "./util/token";
 import {TokenRegistry} from "./registry";
 import {EthereumAddress, EthereumNetwork, EthereumTransactionHash} from "./types";
 import {getWeb3Provider, getWallet} from "./provider";
@@ -10,7 +10,7 @@ import {createOwner, Owner, TitleEscrowOwner, WriteableTitleEscrowOwner} from ".
  * Class Token to read info from ERC721 contract.
  */
 export class ReadOnlyToken {
-  document: WrappedDocument;
+  document: WrappedDocument<v2.OpenAttestationDocument> | WrappedDocument<v3.OpenAttestationDocument>;
 
   web3Provider: providers.BaseProvider;
 
@@ -21,14 +21,14 @@ export class ReadOnlyToken {
     web3Provider = getWeb3Provider(),
     network = EthereumNetwork.Ropsten // Default to Ropsten since we currently only operate on Ropsten
   }: {
-    document: WrappedDocument;
+    document: WrappedDocument<v2.OpenAttestationDocument> | WrappedDocument<v3.OpenAttestationDocument>;
     web3Provider?: providers.BaseProvider;
     network?: EthereumNetwork;
   }) {
     this.document = document;
     this.web3Provider = web3Provider || getDefaultProvider(network);
     this.tokenRegistry = new TokenRegistry({
-      contractAddress: getIssuer(document).tokenRegistry,
+      contractAddress: getIssuerAddress(document),
       web3Provider: this.web3Provider
     });
   }
@@ -48,7 +48,7 @@ export class WriteableToken extends ReadOnlyToken {
     wallet = getWallet(),
     network = EthereumNetwork.Ropsten // Default to Ropsten since we currently only operate on Ropsten
   }: {
-    document: WrappedDocument;
+    document: WrappedDocument<v2.OpenAttestationDocument> | WrappedDocument<v3.OpenAttestationDocument>;
     web3Provider?: providers.BaseProvider;
     wallet: Wallet | undefined;
     network?: EthereumNetwork;
@@ -60,7 +60,7 @@ export class WriteableToken extends ReadOnlyToken {
     }
     this.wallet = wallet;
     this.tokenRegistry = new TokenRegistry({
-      contractAddress: getIssuer(this.document).tokenRegistry,
+      contractAddress: getIssuerAddress(this.document),
       web3Provider: this.web3Provider,
       wallet
     });

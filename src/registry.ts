@@ -1,4 +1,4 @@
-import {WrappedDocument} from "@govtechsg/open-attestation";
+import {v2, v3, WrappedDocument} from "@govtechsg/open-attestation";
 import {Contract, getDefaultProvider, providers, Wallet} from "ethers";
 import {getBatchMerkleRoot} from "./util/token";
 import {abi as TokenRegistryABI} from "../build/contracts/TradeTrustERC721.json";
@@ -40,17 +40,23 @@ export class TokenRegistry {
     }
   }
 
-  async mint(document: WrappedDocument, ownerAddress: EthereumAddress) {
+  async mint(
+    document: WrappedDocument<v2.OpenAttestationDocument> | WrappedDocument<v3.OpenAttestationDocument>,
+    ownerAddress: EthereumAddress
+  ) {
     const tokenId = getBatchMerkleRoot(document);
     return waitForTransaction(this.contractInstance["safeMint(address,uint256)"](ownerAddress, tokenId));
   }
 
-  async ownerOf(document: WrappedDocument) {
+  async ownerOf(document: WrappedDocument<v2.OpenAttestationDocument> | WrappedDocument<v3.OpenAttestationDocument>) {
     const tokenId = getBatchMerkleRoot(document);
     return this.contractInstance.ownerOf(tokenId);
   }
 
-  async transferTo(document: WrappedDocument, newOwnerAddress: EthereumAddress): Promise<EthereumTransactionHash> {
+  async transferTo(
+    document: WrappedDocument<v2.OpenAttestationDocument> | WrappedDocument<v3.OpenAttestationDocument>,
+    newOwnerAddress: EthereumAddress
+  ): Promise<EthereumTransactionHash> {
     const tokenId = getBatchMerkleRoot(document);
     const currentOwner = await this.ownerOf(document);
     return waitForTransaction(
