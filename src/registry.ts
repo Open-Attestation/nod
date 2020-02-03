@@ -1,9 +1,10 @@
 import {WrappedDocument} from "@govtechsg/open-attestation";
-import {providers, Wallet, Contract} from "ethers";
+import {Contract, getDefaultProvider, providers, Wallet} from "ethers";
 import {getBatchMerkleRoot} from "./util/token";
 import {abi as TokenRegistryABI} from "../build/contracts/TradeTrustERC721.json";
-import {EthereumAddress, EthereumTransactionHash} from "./types";
+import {EthereumAddress, EthereumNetwork, EthereumTransactionHash} from "./types";
 import {waitForTransaction} from "./util/transaction";
+import {getWeb3Provider} from "./provider";
 
 export class TokenRegistry {
   web3Provider: providers.BaseProvider;
@@ -17,17 +18,20 @@ export class TokenRegistry {
    * @param instanceParameters
    * @param instanceParameters.contractAddress - Address that the TokenRegistry is located at
    * @param instanceParameters.web3Provider - An ethers.js signer instance with read/write access
+   * @param instanceParameters.network - Ethereum network name
    */
   constructor({
     contractAddress,
-    web3Provider,
-    wallet
+    web3Provider = getWeb3Provider(),
+    wallet,
+    network = EthereumNetwork.Ropsten // Default to Ropsten since we currently only operate on Ropsten
   }: {
     contractAddress: EthereumAddress;
-    web3Provider: providers.BaseProvider;
+    web3Provider?: providers.BaseProvider;
     wallet?: Wallet;
+    network?: EthereumNetwork;
   }) {
-    this.web3Provider = web3Provider;
+    this.web3Provider = web3Provider || getDefaultProvider(network);
     this.address = contractAddress;
     // doing JSON.stringify below because of ethers.js type issue: https://github.com/ethers-io/ethers.js/issues/602
     this.contractInstance = new Contract(contractAddress, JSON.stringify(TokenRegistryABI), web3Provider);
