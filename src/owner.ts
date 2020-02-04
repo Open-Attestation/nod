@@ -5,7 +5,7 @@ import {ethers} from "ethers";
 import {EthereumAddress, EthereumTransactionHash} from "./types";
 import {getWeb3Provider, getWallet} from "./provider";
 import {getLogger} from "./util/logger";
-import {abi as TitleEscrowABI} from "../build/contracts/TitleEscrow.json";
+import {abi as TitleEscrowABI, bytecode as TitleEscrowBytecode} from "../build/contracts/TitleEscrow.json";
 import {waitForTransaction} from "./util/transaction";
 
 const {error} = getLogger("owner");
@@ -95,6 +95,32 @@ export class WriteableTitleEscrowOwner extends TitleEscrowOwner {
     }
     this.wallet = wallet;
     this.contractInstance = new ethers.Contract(address, JSON.stringify(TitleEscrowABI), wallet);
+  }
+
+  static async deployEscrowContract({
+    registryAddress,
+    beneficiaryAddress,
+    holderAddress,
+    wallet = getWallet(),
+    web3Provider = getWeb3Provider()
+  }: {
+    registryAddress: EthereumAddress;
+    beneficiaryAddress: EthereumAddress;
+    holderAddress: EthereumAddress;
+    wallet: ethers.Wallet | undefined;
+    web3Provider: ethers.providers.BaseProvider;
+  }) {
+    if (!wallet) throw new Error("Deploying contract requires a wallet to be supplied");
+    if (!web3Provider) throw new Error("Deploying contract requires the web3 provider");
+    if (!registryAddress) throw new Error("Please provide the registry address");
+    if (!beneficiaryAddress || !holderAddress)
+      throw new Error("Escrow contract requires beneficiary and holder address");
+
+    const factory = new ethers.ContractFactory(JSON.stringify(TitleEscrowABI), TitleEscrowBytecode, wallet);
+    const contract = await factory.deploy(registryAddress, beneficiaryAddress, holderAddress);
+    await contract.deployed();
+
+    return new TitleEscrowOwner({address: contract.address, web3Provider});
   }
 
   async changeHolder(newHolder: EthereumAddress): Promise<EthereumTransactionHash> {
