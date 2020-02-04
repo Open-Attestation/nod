@@ -16,7 +16,6 @@ describe("Owner", () => {
   let holder1;
   let owner1Address;
   let holder1Address;
-  let undefinedAddress;
 
   beforeEach("", async () => {
     ERC721Instance = await ERC721.new("foo", "bar");
@@ -57,7 +56,8 @@ describe("Owner", () => {
       const errorDeployTxn = WriteableTitleEscrowOwner.deployEscrowContract({
         registryAddress: ERC721Address,
         beneficiaryAddress: owner1Address,
-        holderAddress: holder1Address
+        holderAddress: holder1Address,
+        web3Provider: provider
       });
       await expect(errorDeployTxn).to.be.rejectedWith(/Deploying contract requires a wallet to be supplied/);
     });
@@ -74,7 +74,6 @@ describe("Owner", () => {
 
     it("should throw error if no registry provider", async () => {
       const errorDeployTxn = WriteableTitleEscrowOwner.deployEscrowContract({
-        registryAddress: undefinedAddress,
         beneficiaryAddress: owner1Address,
         holderAddress: holder1Address,
         wallet: owner2,
@@ -86,8 +85,6 @@ describe("Owner", () => {
     it("should throw error if no beneficiary or holder address", async () => {
       const errorDeployTxn = WriteableTitleEscrowOwner.deployEscrowContract({
         registryAddress: ERC721Address,
-        beneficiaryAddress: owner1Address,
-        holderAddress: undefinedAddress,
         wallet: owner2,
         web3Provider: provider
       });
