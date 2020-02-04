@@ -72,7 +72,7 @@ describe("Owner", () => {
       await expect(errorDeployTxn).to.be.rejectedWith(/Deploying contract requires the web3 provider/);
     });
 
-    it("should throw error if no registry provider", async () => {
+    it("should throw error if no registry address provided", async () => {
       const errorDeployTxn = WriteableTitleEscrowOwner.deployEscrowContract({
         beneficiaryAddress: owner1Address,
         holderAddress: holder1Address,
