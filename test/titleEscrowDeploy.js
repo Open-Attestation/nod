@@ -72,7 +72,7 @@ describe("Owner", () => {
       await expect(errorDeployTxn).to.be.rejectedWith(/Deploying contract requires the web3 provider/);
     });
 
-    it("should throw error if no registry address provided", async () => {
+    it("should throw error if there is no registry address provided", async () => {
       const errorDeployTxn = WriteableTitleEscrowOwner.deployEscrowContract({
         beneficiaryAddress: owner1Address,
         holderAddress: holder1Address,
@@ -82,7 +82,7 @@ describe("Owner", () => {
       await expect(errorDeployTxn).to.be.rejectedWith(/Please provide the registry address/);
     });
 
-    it("should throw error if no beneficiary or holder address", async () => {
+    it("should throw error if there is no beneficiary or holder address provided", async () => {
       const errorDeployTxn = WriteableTitleEscrowOwner.deployEscrowContract({
         registryAddress: ERC721Address,
         wallet: owner2,
