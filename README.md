@@ -61,7 +61,9 @@ Usage:
 
 `WriteableTitleEscrowOwner` is the writeable extension of `TitleEscrowOwner`, it allows for calling the smart contract functions which change the state of the system, in addition to everything `TitleEscrowOwner` has.
 
-It has the additional methods `changeHolder(newHolder: EthereumAddress)`, `endorseTransfer(newBeneficiary: EthereumAddress)` , `transferTo(newBeneficiary: EthereumAddress)`.
+It has the additional methods `changeHolder(newHolder: EthereumAddress)`, `endorseTransfer(newBeneficiary: EthereumAddress)` , `transferTo(newBeneficiary: EthereumAddress), mint(to: EthereumAddress)`.
+
+There are also additional helper methods to make a transfer or mint to a new TitleEscrow contract `transferToNewEscrow(beneficiary: EthereumAddress, holder: EthereumAddress) and mintToEscrow(beneficiary: EthereumAddress, holder: EthereumAddress)`. These methods first deploy a `TitleEscrow` contract then executes the transfer or mint function to that `TitleEscrow`'s address.
 
 These methods all return a promise that resolves to the transaction hash when the transaction has been confirmed.
 
@@ -79,7 +81,7 @@ Writeable token instance initialisation requires an EthersJS type wallet that ha
         const writeableTokenInstance = new WriteableToken({document: wrappedDocument, web3Provider, wallet})
         await token.transferOwnership("NEW_OWNER_ADDRESS");
 
-returns a promise for an EthersJS transaction receipt
+returns a transaction hash after the transaction has been mined.
 
 # Development
 
