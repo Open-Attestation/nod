@@ -5,6 +5,7 @@ import {TokenRegistry} from "./registry";
 import {EthereumAddress, EthereumNetwork, EthereumTransactionHash} from "./types";
 import {getWeb3Provider, getWallet} from "./provider";
 import {createOwner, Owner, TitleEscrowOwner, WriteableTitleEscrowOwner} from "./owner";
+import {trace} from "./util/logger";
 
 /**
  * Class Token to read info from ERC721 contract.
@@ -73,6 +74,38 @@ export class WriteableToken extends ReadOnlyToken {
 
   async transferOwnership(to: EthereumAddress) {
     return this.tokenRegistry.transferTo(this.document, to);
+  }
+
+  async mint(to: EthereumAddress) {
+    return this.tokenRegistry.mint(this.document, to);
+  }
+
+  async transferToNewEscrow(beneficiary: EthereumAddress, holder: EthereumAddress) {
+    trace(`Deploying escrow contract before transferring`);
+    const escrowInstance = await WriteableTitleEscrowOwner.deployEscrowContract({
+      registryAddress: this.tokenRegistry.address,
+      beneficiaryAddress: beneficiary,
+      holderAddress: holder,
+      wallet: this.wallet,
+      web3Provider: this.web3Provider
+    });
+
+    trace(`Escrow contract deployed to ${escrowInstance.address}, transferring to it now.`);
+    return this.transferOwnership(escrowInstance.address);
+  }
+
+  async mintToEscrow(beneficiary: EthereumAddress, holder: EthereumAddress) {
+    trace(`Deploying escrow contract before minting`);
+    const escrowInstance = await WriteableTitleEscrowOwner.deployEscrowContract({
+      registryAddress: this.tokenRegistry.address,
+      beneficiaryAddress: beneficiary,
+      holderAddress: holder,
+      wallet: this.wallet,
+      web3Provider: this.web3Provider
+    });
+
+    trace(`Escrow contract deployed to ${escrowInstance.address}, minting to it now.`);
+    return this.mint(escrowInstance.address);
   }
 
   async surrender(): Promise<EthereumTransactionHash> {
