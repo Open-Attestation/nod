@@ -53,6 +53,10 @@ export class TokenRegistry {
     return this.contractInstance.ownerOf(tokenId);
   }
 
+  async deployTitleEscrow(beneficiary: EthereumAddress, holder: EthereumAddress) {
+    return waitForTransaction(this.contractInstance.deployTitleEscrow(beneficiary, holder));
+  }
+
   async transferTo(
     document: WrappedDocument<v2.OpenAttestationDocument> | WrappedDocument<v3.OpenAttestationDocument>,
     newOwnerAddress: EthereumAddress

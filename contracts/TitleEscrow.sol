@@ -2,6 +2,9 @@ pragma solidity ^0.5.11;
 
 import "./ERC721.sol";
 import "./ITitleEscrow.sol";
+import "./Context.sol";
+import "./ERC165.sol";
+import "./TradeTrustERC721.sol";
 
 contract HasNamedBeneficiary is Context {
   address public beneficiary;
@@ -46,25 +49,26 @@ contract HasHolder is Context {
 }
 
 contract TitleEscrow is Context, ITitleEscrow, HasNamedBeneficiary, HasHolder, ERC165 {
+  event TitleEscrowDeployed(address indexed contractAddress, address indexed _tokenRegistry);
   event TitleReceived(address indexed _tokenRegistry, address indexed _from, uint256 indexed _id);
   event TitleCeded(address indexed _tokenRegistry, address indexed _to, uint256 indexed _id);
   event TransferEndorsed(uint256 indexed _tokenid, address indexed _from, address indexed _to);
 
   enum StatusTypes {Uninitialised, InUse, Exited}
-  ERC721 public tokenRegistry;
+  TradeTrustERC721 public tokenRegistry;
   uint256 public _tokenId;
   address public approvedTransferTarget = address(0);
   StatusTypes public status = StatusTypes.Uninitialised;
   bytes4 private constant _INTERFACE_ID_TITLEESCROW = 0xad3fae94;
 
-  //TODO: change ERC721 to address so that external contracts don't need to import ERC721 to use this
-  constructor(ERC721 _tokenRegistry, address _beneficiary, address _holder)
+  constructor(address _tokenRegistry, address _beneficiary, address _holder)
     public
     HasNamedBeneficiary(_beneficiary)
     HasHolder(_holder)
   {
-    tokenRegistry = ERC721(_tokenRegistry);
+    tokenRegistry = TradeTrustERC721(_tokenRegistry);
     _registerInterface(_INTERFACE_ID_TITLEESCROW);
+    emit TitleEscrowDeployed(address(this), _tokenRegistry);
   }
 
   function onERC721Received(address operator, address from, uint256 tokenId, bytes calldata data)
@@ -109,5 +113,31 @@ contract TitleEscrow is Context, ITitleEscrow, HasNamedBeneficiary, HasHolder, E
     status = StatusTypes.Exited;
     emit TitleCeded(address(tokenRegistry), newBeneficiary, _tokenId);
     tokenRegistry.safeTransferFrom(address(this), address(newBeneficiary), _tokenId);
+  }
+
+  function deployNextEscrow(address beneficiary, address holder) public returns (address) {
+    return tokenRegistry.deployTitleEscrow(beneficiary, holder);
+  }
+
+  function deployAndTransfer(address beneficiary, address holder)
+    public
+    isHoldingToken
+    onlyBeneficiary
+    returns (address)
+  {
+    address nextEscrowAddress = deployNextEscrow(beneficiary, holder);
+    transferTo(nextEscrowAddress);
+    return nextEscrowAddress;
+  }
+
+  function deployAndApprove(address beneficiary, address holder)
+    public
+    isHoldingToken
+    onlyBeneficiary
+    returns (address)
+  {
+    address nextEscrowAddress = deployNextEscrow(beneficiary, holder);
+    endorseTransfer(nextEscrowAddress);
+    return nextEscrowAddress;
   }
 }

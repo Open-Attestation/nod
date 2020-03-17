@@ -5,8 +5,9 @@ import {TokenRegistry} from "./registry";
 import {EthereumAddress, EthereumNetwork, EthereumTransactionHash} from "./types";
 import {getWeb3Provider, getWallet} from "./provider";
 import {createOwner, Owner, TitleEscrowOwner, WriteableTitleEscrowOwner} from "./owner";
-import {trace} from "./util/logger";
+import {getLogger} from "./util/logger";
 
+const {trace} = getLogger("token");
 /**
  * Class Token to read info from ERC721 contract.
  */
@@ -81,7 +82,12 @@ export class WriteableToken extends ReadOnlyToken {
   }
 
   async transferToNewEscrow(beneficiary: EthereumAddress, holder: EthereumAddress) {
-    trace(`Deploying escrow contract before transferring`);
+    const tokenOwner = await this.getOwner();
+    if (tokenOwner instanceof WriteableTitleEscrowOwner) {
+      trace(`Current Owner ${tokenOwner.address} is a Title Escrow, calling deployAndTransfer`);
+      return tokenOwner.deployAndTransfer(beneficiary, holder);
+    }
+    trace(`Current Owner ${tokenOwner.address} is a Ethereum Account, deploying escrow contract before transferring`);
     const escrowInstance = await WriteableTitleEscrowOwner.deployEscrowContract({
       registryAddress: this.tokenRegistry.address,
       beneficiaryAddress: beneficiary,
@@ -89,9 +95,20 @@ export class WriteableToken extends ReadOnlyToken {
       wallet: this.wallet,
       web3Provider: this.web3Provider
     });
-
     trace(`Escrow contract deployed to ${escrowInstance.address}, transferring to it now.`);
     return this.transferOwnership(escrowInstance.address);
+  }
+
+  async endorseToNewEscrow(beneficiary: EthereumAddress, holder: EthereumAddress) {
+    const tokenOwner = await this.getOwner();
+    if (tokenOwner instanceof WriteableTitleEscrowOwner) {
+      return tokenOwner.deployAndEndorse(beneficiary, holder);
+    }
+    if (tokenOwner instanceof ReadOnlyToken) {
+      throw new Error("Read Only token has no permissions to write to Ethereum");
+    } else {
+      throw new Error("Cannot do endorsement because current owner is not a Title Escrow");
+    }
   }
 
   async mintToEscrow(beneficiary: EthereumAddress, holder: EthereumAddress) {

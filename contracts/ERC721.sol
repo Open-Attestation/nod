@@ -1,56 +1,7 @@
 pragma solidity ^0.5.11;
 
-// File: contracts/GSN/Context.sol
-
-/*
- * @dev Provides information about the current execution context, including the
- * sender of the transaction and its data. While these are generally available
- * via msg.sender and msg.data, they should not be accessed in such a direct
- * manner, since when dealing with GSN meta-transactions the account sending and
- * paying for execution may not be the actual sender (as far as an application
- * is concerned).
- *
- * This contract is only required for intermediate, library-like contracts.
- */
-contract Context {
-  // Empty internal constructor, to prevent people from mistakenly deploying
-  // an instance of this contract, which should be used via inheritance.
-  constructor() internal {}
-  // solhint-disable-previous-line no-empty-blocks
-
-  function _msgSender() internal view returns (address payable) {
-    return msg.sender;
-  }
-
-  function _msgData() internal view returns (bytes memory) {
-    this; // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/2691
-    return msg.data;
-  }
-}
-
-// File: contracts/introspection/IERC165.sol
-
-/*
-
- * @dev Interface of the ERC165 standard, as defined in the
- * https://eips.ethereum.org/EIPS/eip-165[EIP].
- *
- * Implementers can declare support of contract interfaces, which can then be
- * queried by others ({ERC165Checker}).
- *
- * For an implementation, see {ERC165}.
- */
-interface IERC165 {
-  /**
-     * @dev Returns true if this contract implements the interface defined by
-     * `interfaceId`. See the corresponding
-     * https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section]
-     * to learn more about how these ids are created.
-     *
-     * This function call must use less than 30 000 gas.
-     */
-  function supportsInterface(bytes4 interfaceId) external view returns (bool);
-}
+import "./Context.sol";
+import "./ERC165.sol";
 
 // File: contracts/token/ERC721/IERC721.sol
 
@@ -370,57 +321,6 @@ library Counters {
 
   function decrement(Counter storage counter) internal {
     counter._value = counter._value.sub(1);
-  }
-}
-
-// File: contracts/introspection/ERC165.sol
-
-/**
- * @dev Implementation of the {IERC165} interface.
- *
- * Contracts may inherit from this and call {_registerInterface} to declare
- * their support of an interface.
- */
-contract ERC165 is IERC165 {
-  /*
-     * bytes4(keccak256('supportsInterface(bytes4)')) == 0x01ffc9a7
-     */
-  bytes4 private constant _INTERFACE_ID_ERC165 = 0x01ffc9a7;
-
-  /**
-     * @dev Mapping of interface ids to whether or not it's supported.
-     */
-  mapping(bytes4 => bool) private _supportedInterfaces;
-
-  constructor() internal {
-    // Derived contracts need only register support for their own interfaces,
-    // we register support for ERC165 itself here
-    _registerInterface(_INTERFACE_ID_ERC165);
-  }
-
-  /**
-     * @dev See {IERC165-supportsInterface}.
-     *
-     * Time complexity O(1), guaranteed to always use less than 30 000 gas.
-     */
-  function supportsInterface(bytes4 interfaceId) external view returns (bool) {
-    return _supportedInterfaces[interfaceId];
-  }
-
-  /**
-     * @dev Registers the contract as an implementer of the interface defined by
-     * `interfaceId`. Support of the actual ERC165 interface is automatic and
-     * registering its interface id is not required.
-     *
-     * See {IERC165-supportsInterface}.
-     *
-     * Requirements:
-     *
-     * - `interfaceId` cannot be the ERC165 invalid interface (`0xffffffff`).
-     */
-  function _registerInterface(bytes4 interfaceId) internal {
-    require(interfaceId != 0xffffffff, "ERC165: invalid interface id");
-    _supportedInterfaces[interfaceId] = true;
   }
 }
 
@@ -1219,19 +1119,5 @@ contract ERC721Mintable is ERC721, MinterRole {
 contract ERC721MintableFull is ERC721Mintable, ERC721Full {
   constructor(string memory name, string memory symbol) public ERC721Full(name, symbol) {
     // solhint-disable-previous-line no-empty-blocks
-  }
-}
-
-contract TradeTrustERC721 is ERC721MintableFull, IERC721Receiver {
-  constructor(string memory name, string memory symbol) public ERC721MintableFull(name, symbol) {
-    // solhint-disable-previous-line no-empty-blocks
-  }
-
-  function onERC721Received(address operator, address from, uint256 tokenId, bytes memory data)
-    public
-    returns (bytes4)
-  {
-    _burn(tokenId);
-    return this.onERC721Received.selector;
   }
 }

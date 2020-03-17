@@ -1,6 +1,6 @@
 import {providers} from "ethers";
 import {wrapDocument, getData} from "@govtechsg/open-attestation";
-import {WriteableToken, ReadOnlyToken} from "../src/index";
+import {WriteableToken, ReadOnlyToken, TitleEscrowABI} from "../src/index";
 import {setWallet, setWeb3Provider} from "../src/provider";
 import {getBatchMerkleRoot} from "../src/util/token";
 import ropstenTokenDocument from "../fixtures/tokenRopstenValid.json";
@@ -17,6 +17,8 @@ describe("Token", () => {
   let carrierWallet;
   let owner1;
   let owner2;
+  let owner3;
+  let owner4;
   let sampleDocument;
 
   const replaceTokenRegistry = (document, newTokenRegistryAddress) => {
@@ -39,6 +41,8 @@ describe("Token", () => {
     carrierWallet = provider.getSigner(0);
     owner1 = provider.getSigner(1);
     owner2 = provider.getSigner(2);
+    owner3 = provider.getSigner(3);
+    owner4 = provider.getSigner(4);
     sampleDocument = replaceTokenRegistry(ropstenTokenDocument, ERC721Address);
     await ERC721Instance.safeMint(await owner1.getAddress(), getBatchMerkleRoot(sampleDocument));
   });
@@ -126,7 +130,7 @@ describe("Token", () => {
       const tokenOwner = await token.getOwner();
       expect(tokenOwner.address).to.deep.equal(await owner1.getAddress());
     });
-    it("should transfer to new escrow", async () => {
+    it("should deploy a new Title Escrow and transfer owner to it if current owner is Ethereum Account", async () => {
       const token = new WriteableToken({document: sampleDocument, web3Provider: provider, wallet: owner1});
       await token.transferToNewEscrow(await owner2.getAddress(), await owner1.getAddress());
 
@@ -135,6 +139,54 @@ describe("Token", () => {
       expect(await tokenOwner.beneficiary()).to.deep.equal(await owner2.getAddress());
       expect(await tokenOwner.holder()).to.deep.equal(await owner1.getAddress());
     });
+
+    it("should deployAndTransfer if the current owner is WriteableToken", async () => {
+      const owner2Address = await owner2.getAddress();
+      const owner4Address = await owner3.getAddress();
+      const owner3Address = await owner4.getAddress();
+      const tokenWithOwner1 = new WriteableToken({document: sampleDocument, web3Provider: provider, wallet: owner1});
+      await tokenWithOwner1.transferToNewEscrow(owner2Address, owner2Address);
+
+      const tokenOwner = await tokenWithOwner1.getOwner();
+
+      expect(await tokenOwner.beneficiary()).to.deep.equal(owner2Address);
+      expect(await tokenOwner.holder()).to.deep.equal(owner2Address);
+      const tokenWithOwner2 = new WriteableToken({document: sampleDocument, web3Provider: provider, wallet: owner2});
+      await tokenWithOwner2.transferToNewEscrow(owner3Address, owner4Address);
+      const tokenOwner2 = await tokenWithOwner2.getOwner();
+      expect(await tokenOwner2.beneficiary()).to.deep.equal(owner3Address);
+      expect(await tokenOwner2.holder()).to.deep.equal(owner4Address);
+    });
+
+    it("should deployAndEndorse if the current owner is WriteableToken", async () => {
+      const owner2Address = await owner2.getAddress();
+      const owner4Address = await owner3.getAddress();
+      const owner3Address = await owner4.getAddress();
+      const tokenWithOwner1 = new WriteableToken({document: sampleDocument, web3Provider: provider, wallet: owner1});
+      await tokenWithOwner1.transferToNewEscrow(owner2Address, owner2Address);
+
+      const tokenOwner1 = await tokenWithOwner1.getOwner();
+
+      expect(await tokenOwner1.beneficiary()).to.deep.equal(owner2Address);
+      expect(await tokenOwner1.holder()).to.deep.equal(owner2Address);
+
+      const tokenWithOwner2 = new WriteableToken({document: sampleDocument, web3Provider: provider, wallet: owner2});
+      await tokenWithOwner2.endorseToNewEscrow(owner3Address, owner4Address);
+      const escrowInstance2Address = await tokenOwner1.endorsedTransferTarget();
+
+      expect(await ERC721Instance.ownerOf(getBatchMerkleRoot(sampleDocument))).to.deep.equal(tokenOwner1.address);
+
+      const escrowInstance2 = new web3.eth.Contract(TitleEscrowABI, escrowInstance2Address);
+
+      const newBeneficiary = await escrowInstance2.methods.beneficiary().call();
+      const newHolder = await escrowInstance2.methods.holder().call();
+      const newStatus = await escrowInstance2.methods.status().call();
+
+      expect(newBeneficiary).to.deep.equal(owner3Address);
+      expect(newHolder).to.deep.equal(owner4Address);
+      expect(newStatus).to.deep.equal("0");
+    });
+
     it("should mint to new escrow", async () => {
       setWeb3Provider(provider);
       setWallet(carrierWallet);

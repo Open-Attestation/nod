@@ -11,7 +11,7 @@ import {setWallet, setWeb3Provider} from "../src/provider";
 const {expect} = require("chai").use(require("chai-as-promised"));
 
 const TitleEscrow = artifacts.require("TitleEscrow");
-const ERC721 = artifacts.require("TradeTrustERC721");
+const TradeTrustERC721 = artifacts.require("TradeTrustERC721");
 const SAMPLE_TOKEN_ID = "0x624d0d7ae6f44d41d368d8280856dbaac6aa29fb3b35f45b80a7c1c90032eeb3";
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -27,7 +27,7 @@ describe("Owner", () => {
   let holder1Address;
 
   beforeEach("", async () => {
-    ERC721Instance = await ERC721.new("foo", "bar");
+    ERC721Instance = await TradeTrustERC721.new("foo", "bar");
     ERC721Address = ERC721Instance.address;
     provider = new ethers.providers.Web3Provider(web3.currentProvider);
     setWeb3Provider(provider);

@@ -134,6 +134,14 @@ export class WriteableTitleEscrowOwner extends TitleEscrowOwner {
   async transferTo(newBeneficiary: EthereumAddress): Promise<EthereumTransactionHash> {
     return waitForTransaction(this.contractInstance.transferTo(newBeneficiary));
   }
+
+  async deployAndTransfer(newBeneficiary: EthereumAddress, newHolder: EthereumAddress) {
+    return waitForTransaction(this.contractInstance.deployAndTransfer(newBeneficiary, newHolder));
+  }
+
+  async deployAndEndorse(newBeneficiary: EthereumAddress, newHolder: EthereumAddress) {
+    return waitForTransaction(this.contractInstance.deployAndApprove(newBeneficiary, newHolder));
+  }
 }
 
 export const createOwner = async ({
