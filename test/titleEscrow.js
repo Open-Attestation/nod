@@ -3,6 +3,8 @@ const ERC721 = artifacts.require("TradeTrustERC721");
 const CalculateSelector = artifacts.require("CalculateSelector");
 const {expect} = require("chai").use(require("chai-as-promised"));
 
+const {TitleEscrowABI} = require("../src/index");
+
 const SAMPLE_TOKEN_ID = "0x624d0d7ae6f44d41d368d8280856dbaac6aa29fb3b35f45b80a7c1c90032eeb3";
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -254,7 +256,7 @@ contract("TitleEscrow", accounts => {
     );
   });
   it("should not allow unauthorised party to execute any state change", async () => {
-    const escrowInstance = await TitleEscrow.new(ERC721Address, beneficiary1, holder1, {
+    const escrowInstance = await TitleEscrow.new(ERC721Address, beneficiary1, beneficiary1, {
       from: beneficiary1
     });
 
@@ -276,6 +278,54 @@ contract("TitleEscrow", accounts => {
     });
 
     await expect(attemptToEndorseTransferTx).to.be.rejectedWith(
+      /HasNamedBeneficiary: only the beneficiary may invoke a transfer/
+    );
+
+    const attemptToDeployAndTransfer = escrowInstance.deployAndTransfer(beneficiary2, holder2, {
+      from: beneficiary2
+    });
+
+    await expect(attemptToDeployAndTransfer).to.be.rejectedWith(
+      /HasNamedBeneficiary: only the beneficiary may invoke a transfer/
+    );
+
+    const attemptToDeployAndApprove = escrowInstance.deployAndApprove(beneficiary2, holder2, {
+      from: beneficiary2
+    });
+
+    await expect(attemptToDeployAndApprove).to.be.rejectedWith(
+      /HasNamedBeneficiary: only the beneficiary may invoke a transfer/
+    );
+  });
+  it("should not allow holder to execute change of beneficiary actions", async () => {
+    const escrowInstance = await TitleEscrow.new(ERC721Address, beneficiary1, holder2, {
+      from: beneficiary1
+    });
+
+    const mintTx = await ERC721Instance.safeMint(escrowInstance.address, SAMPLE_TOKEN_ID);
+    assertTransferLog(mintTx.logs[0], ZERO_ADDRESS, escrowInstance.address);
+
+    const attemptToEndorseTransferTx = escrowInstance.endorseTransfer(beneficiary2, {
+      from: holder2
+    });
+
+    await expect(attemptToEndorseTransferTx).to.be.rejectedWith(
+      /HasNamedBeneficiary: only the beneficiary may invoke a transfer/
+    );
+
+    const attemptToDeployAndTransfer = escrowInstance.deployAndTransfer(beneficiary2, holder2, {
+      from: holder2
+    });
+
+    await expect(attemptToDeployAndTransfer).to.be.rejectedWith(
+      /HasNamedBeneficiary: only the beneficiary may invoke a transfer/
+    );
+
+    const attemptToDeployAndApprove = escrowInstance.deployAndApprove(beneficiary2, holder2, {
+      from: holder2
+    });
+
+    await expect(attemptToDeployAndApprove).to.be.rejectedWith(
       /HasNamedBeneficiary: only the beneficiary may invoke a transfer/
     );
   });
@@ -324,5 +374,50 @@ contract("TitleEscrow", accounts => {
     const transferTx2 = escrowInstance2.transferTo(escrowInstance1.address, {from: beneficiary2});
 
     await expect(transferTx2).to.be.rejectedWith(/TitleEscrow: Contract has been used before/);
+  });
+
+  it("should be able to deploy another instance of title escrow and transfer to it", async () => {
+    const escrowInstance1 = await TitleEscrow.new(ERC721Address, beneficiary1, beneficiary1, {
+      from: beneficiary1
+    });
+    await ERC721Instance.safeMint(escrowInstance1.address, SAMPLE_TOKEN_ID);
+
+    const deployAndTransferTx = await escrowInstance1.deployAndTransfer(beneficiary2, holder2, {from: beneficiary1});
+
+    const [, titleEscrowDeployedLog] = deployAndTransferTx.logs;
+    const escrowInstance2Address = titleEscrowDeployedLog.args.contractAddress;
+
+    const escrowInstance2 = new web3.eth.Contract(TitleEscrowABI, escrowInstance2Address);
+
+    const newBeneficiary = await escrowInstance2.methods.beneficiary().call();
+    const newHolder = await escrowInstance2.methods.holder().call();
+
+    expect(newBeneficiary).to.deep.equal(beneficiary2);
+    expect(newHolder).to.deep.equal(holder2);
+
+    expect(await ERC721Instance.ownerOf(SAMPLE_TOKEN_ID)).to.deep.equal(escrowInstance2Address);
+  });
+  it("should be able to deploy another instance of title escrow and approve endorsement to it", async () => {
+    const escrowInstance1 = await TitleEscrow.new(ERC721Address, beneficiary1, beneficiary1, {
+      from: beneficiary1
+    });
+    await ERC721Instance.safeMint(escrowInstance1.address, SAMPLE_TOKEN_ID);
+
+    const deployAndTransferTx = await escrowInstance1.deployAndApprove(beneficiary2, holder2, {from: beneficiary1});
+
+    const [, titleEscrowDeployedLog] = deployAndTransferTx.logs;
+    const escrowInstance2Address = titleEscrowDeployedLog.args.contractAddress;
+
+    const escrowInstance2 = new web3.eth.Contract(TitleEscrowABI, escrowInstance2Address);
+
+    const newBeneficiary = await escrowInstance2.methods.beneficiary().call();
+    const newHolder = await escrowInstance2.methods.holder().call();
+    const newStatus = await escrowInstance2.methods.status().call();
+
+    expect(newBeneficiary).to.deep.equal(beneficiary2);
+    expect(newHolder).to.deep.equal(holder2);
+    expect(newStatus).to.deep.equal("0");
+
+    expect(await escrowInstance1.approvedTransferTarget()).to.deep.equal(escrowInstance2Address);
   });
 });
