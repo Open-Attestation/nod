@@ -4,7 +4,7 @@ import {
   WriteableTitleEscrowOwner,
   EthereumAccountOwner,
   isAddressTitleEscrow,
-  createOwner
+  createOwner,
 } from "../src/index";
 import {setWallet, setWeb3Provider} from "../src/provider";
 
@@ -55,7 +55,7 @@ describe("Owner", () => {
   describe("TitleEscrowOwner", () => {
     it("static method isTitleEscrow should correctly detect TitleEscrow contracts", async () => {
       const escrowInstance = await TitleEscrow.new(ERC721Address, owner1Address, owner1Address, {
-        from: owner1Address
+        from: owner1Address,
       });
 
       expect(await isAddressTitleEscrow({address: escrowInstance.address})).to.deep.equal(true);
@@ -64,7 +64,7 @@ describe("Owner", () => {
 
     it("should correctly initialise if the given address is a TitleEscrow contract", async () => {
       const escrowInstance = await TitleEscrow.new(ERC721Address, owner1Address, owner2Address, {
-        from: owner1Address
+        from: owner1Address,
       });
       const titleEscrowInstance = new TitleEscrowOwner({address: escrowInstance.address});
 
@@ -73,7 +73,7 @@ describe("Owner", () => {
     });
     it("should return the holder correctly if it has been changed after initialisation", async () => {
       const escrowInstance = await TitleEscrow.new(ERC721Address, owner1Address, owner1Address, {
-        from: owner1Address
+        from: owner1Address,
       });
 
       await ERC721Instance.safeMint(escrowInstance.address, SAMPLE_TOKEN_ID);
@@ -84,7 +84,7 @@ describe("Owner", () => {
     });
     it("should return the approvedTransferTarget if there is one set", async () => {
       const escrowInstance = await TitleEscrow.new(ERC721Address, owner1Address, owner2Address, {
-        from: owner1Address
+        from: owner1Address,
       });
       await ERC721Instance.safeMint(escrowInstance.address, SAMPLE_TOKEN_ID);
       await escrowInstance.endorseTransfer(owner2Address, {from: owner1Address});
@@ -93,7 +93,7 @@ describe("Owner", () => {
     });
     it("should return zero address if there is no endorsed transfer target", async () => {
       const escrowInstance = await TitleEscrow.new(ERC721Address, owner1Address, owner2Address, {
-        from: owner1Address
+        from: owner1Address,
       });
       await ERC721Instance.safeMint(escrowInstance.address, SAMPLE_TOKEN_ID);
       const titleEscrowInstance = new TitleEscrowOwner({address: escrowInstance.address});
@@ -106,7 +106,7 @@ describe("Owner", () => {
 
     beforeEach(async () => {
       escrowInstance = await TitleEscrow.new(ERC721Address, owner1Address, holder1Address, {
-        from: owner1Address
+        from: owner1Address,
       });
       await ERC721Instance.safeMint(escrowInstance.address, SAMPLE_TOKEN_ID);
     });
@@ -137,7 +137,7 @@ describe("Owner", () => {
     });
     it("should create a TitleEscrowOwner instance if the given address is a TitleEscrow and no wallet was provided", async () => {
       const escrowInstance = await TitleEscrow.new(ERC721Address, owner1Address, owner1Address, {
-        from: owner1Address
+        from: owner1Address,
       });
       const ownerInstance = await createOwner({address: escrowInstance.address});
       expect(ownerInstance instanceof TitleEscrowOwner).to.be.deep.equal(true);
@@ -146,7 +146,7 @@ describe("Owner", () => {
     });
     it("should create a WriteableTitleEscrowOwner instance if the given address is a TitleEscrow and a wallet was provided", async () => {
       const escrowInstance = await TitleEscrow.new(ERC721Address, owner1Address, owner1Address, {
-        from: owner1Address
+        from: owner1Address,
       });
       const ownerInstance = await createOwner({address: escrowInstance.address, wallet: owner1});
       expect(ownerInstance instanceof WriteableTitleEscrowOwner).to.be.deep.equal(true);

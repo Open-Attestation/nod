@@ -40,7 +40,7 @@ describe("Owner", () => {
         beneficiaryAddress: owner1Address,
         holderAddress: holder1Address,
         wallet: owner2,
-        web3Provider: provider
+        web3Provider: provider,
       });
 
       expect(await titleEscrowInstance.contractInstance.status()).to.deep.equal(0);
@@ -57,7 +57,7 @@ describe("Owner", () => {
         registryAddress: ERC721Address,
         beneficiaryAddress: owner1Address,
         holderAddress: holder1Address,
-        web3Provider: provider
+        web3Provider: provider,
       });
       await expect(errorDeployTxn).to.be.rejectedWith(/Deploying contract requires a wallet to be supplied/);
     });
@@ -67,7 +67,7 @@ describe("Owner", () => {
         registryAddress: ERC721Address,
         beneficiaryAddress: owner1Address,
         holderAddress: holder1Address,
-        wallet: owner2
+        wallet: owner2,
       });
       await expect(errorDeployTxn).to.be.rejectedWith(/Deploying contract requires the web3 provider/);
     });
@@ -77,7 +77,7 @@ describe("Owner", () => {
         beneficiaryAddress: owner1Address,
         holderAddress: holder1Address,
         wallet: owner2,
-        web3Provider: provider
+        web3Provider: provider,
       });
       await expect(errorDeployTxn).to.be.rejectedWith(/Please provide the registry address/);
     });
@@ -86,7 +86,7 @@ describe("Owner", () => {
       const errorDeployTxn = WriteableTitleEscrowOwner.deployEscrowContract({
         registryAddress: ERC721Address,
         wallet: owner2,
-        web3Provider: provider
+        web3Provider: provider,
       });
       await expect(errorDeployTxn).to.be.rejectedWith(/Escrow contract requires beneficiary and holder address/);
     });

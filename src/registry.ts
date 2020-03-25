@@ -24,7 +24,7 @@ export class TokenRegistry {
     contractAddress,
     web3Provider = getWeb3Provider(),
     wallet,
-    network = EthereumNetwork.Ropsten // Default to Ropsten since we currently only operate on Ropsten
+    network = EthereumNetwork.Ropsten, // Default to Ropsten since we currently only operate on Ropsten
   }: {
     contractAddress: EthereumAddress;
     web3Provider?: providers.BaseProvider;

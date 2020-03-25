@@ -88,7 +88,7 @@
     "jest": "24.8.0",
     "lint-staged": "9.2.0",
     "open-cli": "5.0.0",
-    "prettier": "1.19.1",
+    "prettier": "2.0.2",
     "prettier-plugin-solidity": "1.0.0-alpha.35",
     "rimraf": "2.6.3",
     "semantic-release": "^15.13.30",
