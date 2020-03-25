@@ -60,7 +60,7 @@ export class TitleEscrowOwner extends Owner {
     this.contractInstance = new ethers.Contract(address, JSON.stringify(TitleEscrowABI), web3Provider);
   }
 
-  isTitleEscrow(): boolean {
+  isTitleEscrow(): this is TitleEscrowOwner {
     return true;
   }
 
