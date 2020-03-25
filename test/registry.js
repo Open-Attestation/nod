@@ -14,7 +14,7 @@ describe("TokenRegistry Library", () => {
   let owner2;
 
   const documentStub = {
-    signature: {merkleRoot: "624d0d7ae6f44d41d368d8280856dbaac6aa29fb3b35f45b80a7c1c90032eeb3"}
+    signature: {merkleRoot: "624d0d7ae6f44d41d368d8280856dbaac6aa29fb3b35f45b80a7c1c90032eeb3"},
   };
 
   beforeEach("", async () => {
@@ -30,11 +30,11 @@ describe("TokenRegistry Library", () => {
     const tokenRegistryInstanceWithShippingLineWallet = new TokenRegistry({
       contractAddress: ERC721Address,
       web3Provider: provider,
-      wallet: shippingLine
+      wallet: shippingLine,
     });
     const tokenRegistryWithoutWallet = new TokenRegistry({
       contractAddress: ERC721Address,
-      web3Provider: provider
+      web3Provider: provider,
     });
     const newOwner = await owner1.getAddress();
     await tokenRegistryInstanceWithShippingLineWallet.mint(documentStub, newOwner);
@@ -45,7 +45,7 @@ describe("TokenRegistry Library", () => {
     const tokenRegistryInstanceWithShippingLineWallet = new TokenRegistry({
       contractAddress: ERC721Address,
       web3Provider: provider,
-      wallet: shippingLine
+      wallet: shippingLine,
     });
     const newOwner = await owner1.getAddress();
     await tokenRegistryInstanceWithShippingLineWallet.mint(documentStub, newOwner);
@@ -55,7 +55,7 @@ describe("TokenRegistry Library", () => {
     const tokenRegistryInstanceWithOwner1Wallet = new TokenRegistry({
       contractAddress: ERC721Address,
       web3Provider: provider,
-      wallet: owner1
+      wallet: owner1,
     });
     await tokenRegistryInstanceWithOwner1Wallet.transferTo(documentStub, ERC721Instance.address);
     const nextOwnerQuery = tokenRegistryInstanceWithOwner1Wallet.ownerOf(documentStub);
@@ -67,7 +67,7 @@ describe("TokenRegistry Library", () => {
     const tokenRegistryInstance = new TokenRegistry({
       contractAddress: ERC721Address,
       web3Provider: provider,
-      wallet: shippingLine
+      wallet: shippingLine,
     });
     const newOwner = await owner1.getAddress();
     await tokenRegistryInstance.mint(documentStub, newOwner);
@@ -79,7 +79,7 @@ describe("TokenRegistry Library", () => {
     const tokenRegistryInstanceWithShippingLineWallet = new TokenRegistry({
       contractAddress: ERC721Address,
       web3Provider: provider,
-      wallet: shippingLine
+      wallet: shippingLine,
     });
     const newOwner = await owner1.getAddress();
     await tokenRegistryInstanceWithShippingLineWallet.mint(documentStub, newOwner);
@@ -89,7 +89,7 @@ describe("TokenRegistry Library", () => {
     const tokenRegistryInstanceWithOwner1Wallet = new TokenRegistry({
       contractAddress: ERC721Address,
       web3Provider: provider,
-      wallet: owner1
+      wallet: owner1,
     });
     const nextOwnerAddress = await owner2.getAddress();
     await tokenRegistryInstanceWithOwner1Wallet.transferTo(documentStub, nextOwnerAddress);
@@ -101,7 +101,7 @@ describe("TokenRegistry Library", () => {
     const tokenRegistryInstanceWithShippingLineWallet = new TokenRegistry({
       contractAddress: ERC721Address,
       web3Provider: provider,
-      wallet: shippingLine
+      wallet: shippingLine,
     });
     const newOwner = await owner1.getAddress();
     await tokenRegistryInstanceWithShippingLineWallet.mint(documentStub, newOwner);
@@ -111,7 +111,7 @@ describe("TokenRegistry Library", () => {
     const tokenRegistryInstanceWithOwner2Wallet = new TokenRegistry({
       contractAddress: ERC721Address,
       web3Provider: provider,
-      wallet: owner2
+      wallet: owner2,
     });
     const nextOwnerAddress = await owner2.getAddress();
     const transferTxShouldFail = tokenRegistryInstanceWithOwner2Wallet.transferTo(documentStub, nextOwnerAddress);

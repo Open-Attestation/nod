@@ -28,7 +28,7 @@ describe("Token", () => {
   /**
    * Helper method to generate a new token id
    */
-  const rewrapDocument = document => {
+  const rewrapDocument = (document) => {
     return wrapDocument(getData(document));
   };
 
@@ -84,7 +84,7 @@ describe("Token", () => {
     it("should surrender using the TitleEscrow transfer method if owner is a title escrow", async () => {
       const owner1Address = await owner1.getAddress();
       const escrowInstance = await TitleEscrow.new(ERC721Address, owner1Address, owner1Address, {
-        from: owner1Address
+        from: owner1Address,
       });
 
       const token = new WriteableToken({document: sampleDocument, web3Provider: provider, wallet: owner1});

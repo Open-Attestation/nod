@@ -12,7 +12,7 @@ const {error} = getLogger("owner");
 
 export const isAddressTitleEscrow = async ({
   address,
-  web3Provider = getWeb3Provider()
+  web3Provider = getWeb3Provider(),
 }: {
   address: EthereumAddress;
   web3Provider?: ethers.providers.BaseProvider;
@@ -33,11 +33,11 @@ export abstract class Owner {
     this.address = address;
   }
 
-  abstract async isTitleEscrow(): Promise<boolean>;
+  abstract isTitleEscrow(): boolean;
 }
 
 export class EthereumAccountOwner extends Owner {
-  async isTitleEscrow() {
+  isTitleEscrow() {
     return false;
   }
 }
@@ -50,7 +50,7 @@ export class TitleEscrowOwner extends Owner {
   // Use the createOwner method below if you are not sure if the target is a TitleEscrow contract
   constructor({
     address,
-    web3Provider = getWeb3Provider()
+    web3Provider = getWeb3Provider(),
   }: {
     address: EthereumAddress;
     web3Provider?: ethers.providers.BaseProvider;
@@ -60,7 +60,7 @@ export class TitleEscrowOwner extends Owner {
     this.contractInstance = new ethers.Contract(address, JSON.stringify(TitleEscrowABI), web3Provider);
   }
 
-  async isTitleEscrow(): Promise<boolean> {
+  isTitleEscrow(): boolean {
     return true;
   }
 
@@ -83,7 +83,7 @@ export class WriteableTitleEscrowOwner extends TitleEscrowOwner {
   constructor({
     address,
     wallet = getWallet(),
-    web3Provider = getWeb3Provider()
+    web3Provider = getWeb3Provider(),
   }: {
     address: EthereumAddress;
     web3Provider: ethers.providers.BaseProvider;
@@ -102,7 +102,7 @@ export class WriteableTitleEscrowOwner extends TitleEscrowOwner {
     beneficiaryAddress,
     holderAddress,
     wallet = getWallet(),
-    web3Provider = getWeb3Provider()
+    web3Provider = getWeb3Provider(),
   }: {
     registryAddress: EthereumAddress;
     beneficiaryAddress: EthereumAddress;
@@ -139,7 +139,7 @@ export class WriteableTitleEscrowOwner extends TitleEscrowOwner {
 export const createOwner = async ({
   address,
   web3Provider = getWeb3Provider(),
-  wallet = getWallet()
+  wallet = getWallet(),
 }: {
   address: EthereumAddress;
   web3Provider?: ethers.providers.BaseProvider;

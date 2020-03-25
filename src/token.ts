@@ -20,7 +20,7 @@ export class ReadOnlyToken {
   constructor({
     document,
     web3Provider = getWeb3Provider(),
-    network = EthereumNetwork.Ropsten // Default to Ropsten since we currently only operate on Ropsten
+    network = EthereumNetwork.Ropsten, // Default to Ropsten since we currently only operate on Ropsten
   }: {
     document: WrappedDocument<v2.OpenAttestationDocument> | WrappedDocument<v3.OpenAttestationDocument>;
     web3Provider?: providers.BaseProvider;
@@ -30,7 +30,7 @@ export class ReadOnlyToken {
     this.web3Provider = web3Provider || getDefaultProvider(network);
     this.tokenRegistry = new TokenRegistry({
       contractAddress: getIssuerAddress(document),
-      web3Provider: this.web3Provider
+      web3Provider: this.web3Provider,
     });
   }
 
@@ -47,7 +47,7 @@ export class WriteableToken extends ReadOnlyToken {
     document,
     web3Provider = getWeb3Provider(),
     wallet = getWallet(),
-    network = EthereumNetwork.Ropsten // Default to Ropsten since we currently only operate on Ropsten
+    network = EthereumNetwork.Ropsten, // Default to Ropsten since we currently only operate on Ropsten
   }: {
     document: WrappedDocument<v2.OpenAttestationDocument> | WrappedDocument<v3.OpenAttestationDocument>;
     web3Provider?: providers.BaseProvider;
@@ -63,7 +63,7 @@ export class WriteableToken extends ReadOnlyToken {
     this.tokenRegistry = new TokenRegistry({
       contractAddress: getIssuerAddress(this.document),
       web3Provider: this.web3Provider,
-      wallet
+      wallet,
     });
   }
 
@@ -87,7 +87,7 @@ export class WriteableToken extends ReadOnlyToken {
       beneficiaryAddress: beneficiary,
       holderAddress: holder,
       wallet: this.wallet,
-      web3Provider: this.web3Provider
+      web3Provider: this.web3Provider,
     });
 
     trace(`Escrow contract deployed to ${escrowInstance.address}, transferring to it now.`);
@@ -101,7 +101,7 @@ export class WriteableToken extends ReadOnlyToken {
       beneficiaryAddress: beneficiary,
       holderAddress: holder,
       wallet: this.wallet,
-      web3Provider: this.web3Provider
+      web3Provider: this.web3Provider,
     });
 
     trace(`Escrow contract deployed to ${escrowInstance.address}, minting to it now.`);
