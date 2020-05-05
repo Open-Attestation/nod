@@ -19,7 +19,10 @@ export const isAddressTitleEscrow = async ({
 }) => {
   try {
     const MaybeTitleEscrowContract = new ethers.Contract(address, JSON.stringify(TitleEscrowABI), web3Provider);
-    return await MaybeTitleEscrowContract.supportsInterface("0xad3fae94");
+    return (
+      (await MaybeTitleEscrowContract.supportsInterface("0xad3fae94")) || // Old interface without transferToNewEscrow
+      (await MaybeTitleEscrowContract.supportsInterface("0xd9841dc4")) // New interface with transferToNewEscrow
+    );
   } catch (e) {
     error(e);
   }
